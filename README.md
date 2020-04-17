@@ -1,6 +1,6 @@
 ## Swift 5.1 高帧率朋友圈实现
 
-> 本文基于**[IGListKit 4.0]([https://github.com/Instagram/IGListKit](https://github.com/Instagram/IGListKit))**实现列表的高帧率滑动效果，项目地址见[GitHub](https://github.com/jeromexiong/cover-moments)
+> 本文基于**[IGListKit 4.0]([https://github.com/Instagram/IGListKit](https://github.com/Instagram/IGListKit))**实现列表的高帧率滑动效果，文章描述见[简书](https://www.jianshu.com/p/fffff93a1779)
 
 ## 话不多说，上图
 ![ezgif.com-resize.gif](https://upload-images.jianshu.io/upload_images/5677882-4d4fa7da7876da44.gif?imageMogr2/auto-orient/strip)
