@@ -6,6 +6,8 @@ target 'mooc' do
   
   pod 'Kingfisher'
   pod 'SwiftyJSON'
+  pod 'SnapKit'
+  pod 'JXPhotoBrowser', '~> 3.0'
 
   pod 'IGListKit', '~> 4.0.0'
   pod 'MJRefresh'

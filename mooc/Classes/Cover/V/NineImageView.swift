@@ -52,6 +52,7 @@ extension NineImageView: UICollectionViewDataSource, UICollectionViewDelegateFlo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("图片预览\(indexPath)")
+        PhotoManager.previewImages(images, collectionView: collectionView, indexPath: indexPath)
     }
 }
 

@@ -1,8 +1,8 @@
 [{
-    "id": "1",
+    "customer_id": "1",
     "headImage": "http://pic.kekenet.com/2014/1113/16391415865876.jpg",
-    "headAvatar": "http://5b0988e595225.cdn.sohucs.com/images/20171002/394dd13e0fb4479aaa159ba45e994bff.jpeg",
-    "headUserName": "Doogore"
+    "avatar_url": "http://5b0988e595225.cdn.sohucs.com/images/20171002/394dd13e0fb4479aaa159ba45e994bff.jpeg",
+    "user_name": "Doogore"
     
 },
 {
@@ -13,16 +13,19 @@
     "location": "北京·大相国寺",
     "publicTime": "6小时前",
     "comments": [{
-        "comment": "cav",
-        "person": "james"
+        "avatar_url": "http://p1.ifengimg.com/fck/2017_46/61dc7cab79bf1e8_w500_h500.jpg",
+        "comment": "万代大",
+        "person": "欧米茄"
     },
     {
-        "comment": "boston",
-        "person": "irving"
+        "avatar_url": "https://uploadfile.bizhizu.cn/2015/0515/20150515084659228.jpg",
+        "comment": "你在说什么？",
+        "person": "要死啦"
     },
     {
-        "comment": "cav",
-        "person": "love"
+        "avatar_url": "http://5b0988e595225.cdn.sohucs.com/images/20171002/394dd13e0fb4479aaa159ba45e994bff.jpeg",
+        "comment": "红哦哦",
+        "person": "爱的心疼"
     }]
     
 },
@@ -31,7 +34,7 @@
     "limage": "",
     "avatar": "http://p1.ifengimg.com/fck/2017_46/61dc7cab79bf1e8_w500_h500.jpg",
     "userName": "鲁做人",
-    "content": "对，这话我说过",
+    "content": "对，这话我说过 021-87888822xxa",
     "location": "西京·未央宫",
     "publicTime": "1小时前"
     
@@ -41,18 +44,21 @@
     "limage": "https://uploadfile.bizhizu.cn/2015/0515/20150515084659228.jpg",
     "avatar": "http://p1.ifengimg.com/fck/2017_46/61dc7cab79bf1e8_w500_h500.jpg",
     "userName": "鲁树人",
-    "content": "伟大的成绩和辛勤劳动是成正比例的，有一分劳动就有一分收获，日积月累，从少到多，奇迹就可以创造出来。",
+    "content": "伟大的成绩和辛勤劳动是成正比例的，有一分劳动就有一分收获，日积月累，从少到多，奇迹就可以创造出来。http://baidu.com",
     "location": "东京·大相国寺",
     "publicTime": "6小时前",
     "comments": [{
+        "avatar_url": "http://5b0988e595225.cdn.sohucs.com/images/20171002/394dd13e0fb4479aaa159ba45e994bff.jpeg",
         "comment": "cav",
         "person": "james"
     },
     {
+        "avatar_url": "http://5b0988e595225.cdn.sohucs.com/images/20171002/394dd13e0fb4479aaa159ba45e994bff.jpeg",
         "comment": "boston",
         "person": "irving"
     },
     {
+        "avatar_url": "http://5b0988e595225.cdn.sohucs.com/images/20171002/394dd13e0fb4479aaa159ba45e994bff.jpeg",
         "comment": "cav",
         "person": "love"
     }]

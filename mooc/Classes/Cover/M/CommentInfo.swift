@@ -12,8 +12,10 @@ struct CommentInfo: Codable {
     var comment: String = ""
     var person: String = ""
     var user_id: Int = 0
+    var avatar_url: String!
     
     init(_ json: JSON) {
+        avatar_url = json["avatar_url"].stringValue
         comment = json["comment"].stringValue
         person = json["person"].stringValue
         user_id = json["user_id"].intValue
@@ -22,6 +24,6 @@ struct CommentInfo: Codable {
 
 extension CommentInfo: Equatable {
     static func == (lhs: CommentInfo, rhs: CommentInfo) -> Bool {
-        return (lhs.comment == rhs.comment) && (lhs.person == rhs.person)
+        return (lhs.comment == rhs.comment) && (lhs.user_id == rhs.user_id)
     }
 }

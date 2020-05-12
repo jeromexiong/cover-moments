@@ -68,6 +68,15 @@ class MomentInfo: Codable {
         }
         return 3 * mImageW + 4 * verticalSpace
     }
+    var thumbsHeight: CGFloat {
+        let verticalSpace: CGFloat = 5
+        let rows = comments.count / 7 + (comments.count % 7 > 0 ? 1 : 0)
+        let vertical = CGFloat(rows+1)*verticalSpace
+        return CGFloat(rows) * CommentThumbView.itemWidth + vertical
+    }
+    var commentHeight: CGFloat {
+        return CGFloat(comments.count * 50)
+    }
 }
 
 extension MomentInfo: ListDiffable {

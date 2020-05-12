@@ -12,6 +12,8 @@ private let topOffset: CGFloat = 60
 private let bottomIndent: CGFloat = 40
 private let avatorW: CGFloat = 80
 private let space: CGFloat = 20
+
+/// 顶部视图
 class MomentTopCell: UICollectionViewCell {
     fileprivate lazy var headIV: UIImageView = {
         let iv = UIImageView()

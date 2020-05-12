@@ -26,6 +26,14 @@
 		308DE59E2445A6870056DC91 /* MomentBindingSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DE59D2445A6870056DC91 /* MomentBindingSection.swift */; };
 		308DE5B42445C7B60056DC91 /* MomentHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DE5B32445C7B60056DC91 /* MomentHeaderCell.swift */; };
 		308DE5BA2445D9A40056DC91 /* NineImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 308DE5B92445D9A40056DC91 /* NineImageView.swift */; };
+		3096144B246A4AE000259DD3 /* CommentThumbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961448246A4ADF00259DD3 /* CommentThumbView.swift */; };
+		3096144C246A4AE000259DD3 /* OperateMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961449246A4AE000259DD3 /* OperateMenuView.swift */; };
+		3096144D246A4AE000259DD3 /* CommentContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3096144A246A4AE000259DD3 /* CommentContentView.swift */; };
+		3096144F246A4B7A00259DD3 /* PhotoManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3096144E246A4B7A00259DD3 /* PhotoManager.swift */; };
+		30961453246A4CF000259DD3 /* JXLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961451246A4CF000259DD3 /* JXLabel.swift */; };
+		30961454246A4CF000259DD3 /* JXLabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961452246A4CF000259DD3 /* JXLabelType.swift */; };
+		30961456246A4EBB00259DD3 /* UIViewController+System.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961455246A4EBB00259DD3 /* UIViewController+System.swift */; };
+		30961458246A4EFC00259DD3 /* JXActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961457246A4EFC00259DD3 /* JXActionSheet.swift */; };
 		30B5F8E6244020FA00818683 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B5F8E5244020FA00818683 /* AppDelegate.swift */; };
 		30B5F8ED244020FA00818683 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30B5F8EB244020FA00818683 /* Main.storyboard */; };
 		30B5F8EF244020FB00818683 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30B5F8EE244020FB00818683 /* Assets.xcassets */; };
@@ -58,6 +66,14 @@
 		308DE59D2445A6870056DC91 /* MomentBindingSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentBindingSection.swift; sourceTree = "<group>"; };
 		308DE5B32445C7B60056DC91 /* MomentHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MomentHeaderCell.swift; sourceTree = "<group>"; };
 		308DE5B92445D9A40056DC91 /* NineImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NineImageView.swift; sourceTree = "<group>"; };
+		30961448246A4ADF00259DD3 /* CommentThumbView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentThumbView.swift; sourceTree = "<group>"; };
+		30961449246A4AE000259DD3 /* OperateMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperateMenuView.swift; sourceTree = "<group>"; };
+		3096144A246A4AE000259DD3 /* CommentContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentContentView.swift; sourceTree = "<group>"; };
+		3096144E246A4B7A00259DD3 /* PhotoManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoManager.swift; sourceTree = "<group>"; };
+		30961451246A4CF000259DD3 /* JXLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXLabel.swift; sourceTree = "<group>"; };
+		30961452246A4CF000259DD3 /* JXLabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXLabelType.swift; sourceTree = "<group>"; };
+		30961455246A4EBB00259DD3 /* UIViewController+System.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+System.swift"; sourceTree = "<group>"; };
+		30961457246A4EFC00259DD3 /* JXActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXActionSheet.swift; sourceTree = "<group>"; };
 		30B5F8E2244020FA00818683 /* mooc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mooc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B5F8E5244020FA00818683 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30B5F8EC244020FA00818683 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -133,6 +149,7 @@
 			children = (
 				308DE59A2445A3C10056DC91 /* Sections */,
 				308DE5872445981E0056DC91 /* MomentsVC.swift */,
+				3096144E246A4B7A00259DD3 /* PhotoManager.swift */,
 			);
 			path = C;
 			sourceTree = "<group>";
@@ -140,6 +157,10 @@
 		308DE582244595940056DC91 /* V */ = {
 			isa = PBXGroup;
 			children = (
+				30961450246A4CF000259DD3 /* JXLabel */,
+				3096144A246A4AE000259DD3 /* CommentContentView.swift */,
+				30961448246A4ADF00259DD3 /* CommentThumbView.swift */,
+				30961449246A4AE000259DD3 /* OperateMenuView.swift */,
 				3040FDB024495F97001FE4D9 /* headRefresh */,
 				3040FDA024494CE8001FE4D9 /* MomentHeaderImageCell.swift */,
 				3040FDA124494CE8001FE4D9 /* MomentTopCell.swift */,
@@ -168,6 +189,34 @@
 				308DE59D2445A6870056DC91 /* MomentBindingSection.swift */,
 			);
 			path = Sections;
+			sourceTree = "<group>";
+		};
+		30961450246A4CF000259DD3 /* JXLabel */ = {
+			isa = PBXGroup;
+			children = (
+				30961451246A4CF000259DD3 /* JXLabel.swift */,
+				30961452246A4CF000259DD3 /* JXLabelType.swift */,
+			);
+			path = JXLabel;
+			sourceTree = "<group>";
+		};
+		30961459246A515700259DD3 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				3040FD9E24494C41001FE4D9 /* Utils.swift */,
+				3096145A246A516500259DD3 /* Views */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		3096145A246A516500259DD3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3040FDA824494E9D001FE4D9 /* V2FPSLabel.swift */,
+				30961455246A4EBB00259DD3 /* UIViewController+System.swift */,
+				30961457246A4EFC00259DD3 /* JXActionSheet.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		30B5F8D9244020FA00818683 = {
@@ -201,6 +250,7 @@
 		30B5F8FE244024B700818683 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				30961459246A515700259DD3 /* Tools */,
 				30B5F952244046B200818683 /* Main */,
 				308DE57F244595940056DC91 /* Cover */,
 			);
@@ -215,8 +265,6 @@
 				30B5F8E5244020FA00818683 /* AppDelegate.swift */,
 				30B5F8F3244020FB00818683 /* Info.plist */,
 				30B5F8F92440237100818683 /* mooc-Bridging-Header.h */,
-				3040FDA824494E9D001FE4D9 /* V2FPSLabel.swift */,
-				3040FD9E24494C41001FE4D9 /* Utils.swift */,
 			);
 			name = "Support Files";
 			sourceTree = "<group>";
@@ -377,18 +425,26 @@
 				30B5F95B244046B200818683 /* ViewController.swift in Sources */,
 				3040FDA724494DEC001FE4D9 /* UserInfo.swift in Sources */,
 				3040FD9F24494C41001FE4D9 /* Utils.swift in Sources */,
+				30961453246A4CF000259DD3 /* JXLabel.swift in Sources */,
+				30961456246A4EBB00259DD3 /* UIViewController+System.swift in Sources */,
+				3096144C246A4AE000259DD3 /* OperateMenuView.swift in Sources */,
+				30961458246A4EFC00259DD3 /* JXActionSheet.swift in Sources */,
 				30B5F900244024B700818683 /* Constant.swift in Sources */,
 				3040FDB924497DA2001FE4D9 /* MomentCommentCell.swift in Sources */,
+				3096144D246A4AE000259DD3 /* CommentContentView.swift in Sources */,
 				3061D8892447382E00A2DD0F /* MomentLocationCell.swift in Sources */,
+				30961454246A4CF000259DD3 /* JXLabelType.swift in Sources */,
 				3040FDA524494CE8001FE4D9 /* NavView.swift in Sources */,
 				3061D88B24473A5800A2DD0F /* MomentBottomCell.swift in Sources */,
 				3040FDA424494CE8001FE4D9 /* MomentTopCell.swift in Sources */,
 				308DE59E2445A6870056DC91 /* MomentBindingSection.swift in Sources */,
 				308DE58C24459F0C0056DC91 /* CommentInfo.swift in Sources */,
+				3096144F246A4B7A00259DD3 /* PhotoManager.swift in Sources */,
 				308DE58E2445A2320056DC91 /* BaseListVC.swift in Sources */,
 				3040FDA324494CE8001FE4D9 /* MomentHeaderImageCell.swift in Sources */,
 				3040FDB324495F98001FE4D9 /* MomentHeaderRefreshView.m in Sources */,
 				308DE5882445981E0056DC91 /* MomentsVC.swift in Sources */,
+				3096144B246A4AE000259DD3 /* CommentThumbView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,13 +592,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = mooc/mooc.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 52ZMP45QS5;
 				INFOPLIST_FILE = mooc/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = jx.coverlist.demo;
 				PRODUCT_NAME = mooc;
 				SWIFT_OBJC_BRIDGING_HEADER = "mooc/mooc-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -559,13 +616,14 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = mooc/mooc.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 52ZMP45QS5;
 				INFOPLIST_FILE = mooc/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = jx.coverlist.demo;
 				PRODUCT_NAME = mooc;
 				SWIFT_OBJC_BRIDGING_HEADER = "mooc/mooc-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

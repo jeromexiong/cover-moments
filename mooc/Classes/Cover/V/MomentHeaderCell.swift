@@ -8,6 +8,7 @@
 
 import Kingfisher
 
+/// 多张图片显示
 class MomentHeaderCell: UICollectionViewCell {
     static let padding: CGFloat = 16
     static let contentLeft = padding+10+50
@@ -26,8 +27,8 @@ class MomentHeaderCell: UICollectionViewCell {
         lb.font = UIFont.boldSystemFont(ofSize: 17)
         return lb
     }()
-    fileprivate lazy var conentLb: UILabel = {
-        let lb = UILabel()
+    fileprivate lazy var contentLb: JXLabel = {
+        let lb = JXLabel()
         lb.frame = CGRect(x: usernameLb.frame.minX, y: usernameLb.frame.maxY, width: MomentHeaderCell.contentW, height: 0)
         lb.font = UIFont.systemFont(ofSize: 17)
         lb.numberOfLines = 0
@@ -35,7 +36,7 @@ class MomentHeaderCell: UICollectionViewCell {
     }()
     fileprivate lazy var nineImageView: NineImageView = {
         let view = NineImageView(frame: .zero)
-        view.frame = conentLb.frame
+        view.frame = contentLb.frame
         view.frame.size.width -= 50
         return view
     }()
@@ -53,8 +54,20 @@ class MomentHeaderCell: UICollectionViewCell {
     func setup() {
         addSubview(avatarIV)
         addSubview(usernameLb)
-        addSubview(conentLb)
+        addSubview(contentLb)
         addSubview(nineImageView)
+        setLabel()
+    }
+    func setLabel() {
+        let reply = JXLabelType.custom(pattern: "回复(.+)：", start: 2, tender: -1)
+        contentLb.customColor = [reply: mDarkBlueColor]
+        contentLb.enabledTypes = [.URL, .phone, reply]
+        contentLb.handleCustomTap(reply) { (text) in
+            print(text)
+        }
+        contentLb.handleURLTap { (text) in
+            print(text)
+        }
     }
 }
 
@@ -65,15 +78,15 @@ extension MomentHeaderCell: ListBindable {
         self.usernameLb.text = viewModel.userName
         
         if !viewModel.content.isEmpty {
-            conentLb.text = viewModel.content
-            let size = viewModel.content.textSize(conentLb.frame.width, font: conentLb.font)
-            conentLb.frame.size.height = size.height
+            contentLb.text = viewModel.content
+            let size = viewModel.content.textSize(contentLb.frame.width, font: contentLb.font)
+            contentLb.frame.size.height = size.height
         }else {
-            conentLb.frame.size.height = 0
+            contentLb.frame.size.height = 0
         }
         // 不能通过if判断切换同一位置的显示视图
         if viewModel.images.count > 0 {
-            let maxY = conentLb.frame.maxY + 10
+            let maxY = contentLb.frame.maxY + 10
             nineImageView.images = viewModel.images
             nineImageView.frame.origin.y = maxY
             nineImageView.frame.size.height = viewModel.momentPicsHeight(viewModel.images.count)

@@ -112,7 +112,7 @@ extension MomentBindingSection: ListBindingSectionControllerDataSource, ListBind
         case .bottom:
             return CGSize(width: width, height: 30)
         case .comment:
-            return CGSize(width: width, height: 10)
+            return CGSize(width: width, height: object.thumbsHeight + object.commentHeight + 10)
         }
     }
     
