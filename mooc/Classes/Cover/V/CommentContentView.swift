@@ -6,7 +6,7 @@
 //  Copyright © 2020 kilomind. All rights reserved.
 //
 
-import SnapKit
+import Foundation
 
 class CommentContentView: UICollectionView {
     var comments = [CommentInfo]() {
@@ -46,7 +46,19 @@ extension CommentContentView: UICollectionViewDataSource, UICollectionViewDelega
         cell.titleBtn.setTitle(model.person, for: .normal)
         cell.setContent(model.comment, parent: indexPath.item%2==0 ?nil:"xxx")
         cell.onClick = {[weak self] idx in
-            print(idx)
+            guard let self = self else { return }
+            switch idx {
+            case 0:
+                print("点击头像")
+            case 1:
+                print("点击title")
+            case 2:
+                print("回复的标题")
+            case 10:
+                print("点击背景")
+            default:
+                break
+            }
         }
         return cell
     }
@@ -62,7 +74,7 @@ class CommentContentCell: UICollectionViewCell {
         let iv = UIImageView()
         iv.layer.cornerRadius = 5
         iv.layer.masksToBounds = true
-//        iv.isUserInteractionEnabled = true
+        iv.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(viewClick(_:)))
         iv.addGestureRecognizer(tap)
         return iv
@@ -89,7 +101,7 @@ class CommentContentCell: UICollectionViewCell {
         v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
         return v
     }()
-    
+    /// 0 头像 1 标题 2 回复的标题 10 背景
     var onClick: ((Int)->Void)?
     func setContent(_ text: String, parent: String?) {
         contentLb.text = parent == nil ? text : "回复\(parent!)：\(text)"
@@ -97,6 +109,11 @@ class CommentContentCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.isUserInteractionEnabled = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(viewClick(_:)))
+        tag = 10
+        self.addGestureRecognizer(tap)
+        
         addSubview(imageIV)
         addSubview(titleBtn)
         addSubview(contentLb)
@@ -124,7 +141,6 @@ class CommentContentCell: UICollectionViewCell {
         lb.customColor = [reply: mDarkBlueColor]
         lb.enabledTypes = [.URL, .phone, reply]
         lb.handleCustomTap(reply) {[weak self] (text) in
-            print(text)
             self?.onClick?(2)
         }
         lb.handleURLTap { (text) in
@@ -139,11 +155,9 @@ class CommentContentCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     @objc private func viewClick(_ ges: UIGestureRecognizer) {
-        print("view click")
-        onClick?(0)
+        onClick?(ges.view?.tag ?? 10)
     }
     @objc private func click(_ btn: UIButton) {
-        print("title click")
         onClick?(1)
     }
     

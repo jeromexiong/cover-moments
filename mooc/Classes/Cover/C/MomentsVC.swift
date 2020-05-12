@@ -20,6 +20,7 @@ class MomentsVC: BaseListVC {
         return v
     }()
     fileprivate var contentOffsetY: CGFloat = 0
+    var contentOffset: NSObjectProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,10 +29,16 @@ class MomentsVC: BaseListVC {
         loadData()
         addHeadRefresh()
         addLoadMore()
+        
+        contentOffset = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.contentOffset, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
+            guard let delta = noti.object as? CGFloat, let self = self else {
+                return
+            }
+            let offsetY = self.collectionView.contentOffset.y - delta
+            self.collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: false)
+        })
     }
-    deinit {
-        print("deinit")
-    }
+    
     override func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {
         switch object {
         case is MomentInfo:
@@ -43,17 +50,17 @@ class MomentsVC: BaseListVC {
     }
     
     func addHeadRefresh() {
-        collectionView.mj_header = MomentHeaderRefreshView(refreshingBlock: {
+        collectionView.mj_header = MomentHeaderRefreshView(refreshingBlock: {[weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.collectionView.mj_header?.endRefreshing()
+                self?.collectionView.mj_header?.endRefreshing()
             }
         })
     }
     func addLoadMore() {
-        collectionView.mj_footer = MJRefreshAutoNormalFooter(refreshingBlock: {
+        collectionView.mj_footer = MJRefreshAutoNormalFooter(refreshingBlock: {[weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                self.loadData("data2")
-                self.collectionView.mj_footer?.endRefreshing()
+                self?.loadData("data2")
+                self?.collectionView.mj_footer?.endRefreshing()
             }
         })
     }
@@ -84,5 +91,12 @@ extension MomentsVC: UIScrollViewDelegate {
         } else {
             navView.isScrollUp = false
         }
+    }
+}
+
+extension Notification.Name {
+    struct list {
+        /// collectionview的评论列表定位到当前通知
+        static let contentOffset = Notification.Name("contentOffset")
     }
 }

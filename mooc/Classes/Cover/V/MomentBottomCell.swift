@@ -50,6 +50,14 @@ class MomentBottomCell: UICollectionViewCell {
         super.init(coder: coder)
         setup()
     }
+    fileprivate lazy var commentnputView: CommentInputView = {
+        let inputView = CommentInputView()
+        inputView.onTopChanged = {[weak self] top in
+            guard let self = self else { return }
+            inputView.scrollForComment(self)
+        }
+        return inputView
+    }()
 }
 fileprivate extension MomentBottomCell {
     func setup() {
@@ -70,7 +78,7 @@ fileprivate extension MomentBottomCell {
                 if idx == 0 {
                     self.onClick?(0)
                 }else {
-                    self.onClick?(1)
+                    self.commentnputView.show()
                 }
             }
         case 1:

@@ -46,6 +46,9 @@ class BaseListVC: UIViewController {
         super.viewDidLayoutSubviews()
         collectionView.frame = view.bounds
     }
+    deinit {
+        print("deinit")
+    }
 }
 
 extension BaseListVC : ListAdapterDataSource {

@@ -34,6 +34,8 @@
 		30961454246A4CF000259DD3 /* JXLabelType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961452246A4CF000259DD3 /* JXLabelType.swift */; };
 		30961456246A4EBB00259DD3 /* UIViewController+System.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961455246A4EBB00259DD3 /* UIViewController+System.swift */; };
 		30961458246A4EFC00259DD3 /* JXActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30961457246A4EFC00259DD3 /* JXActionSheet.swift */; };
+		3096145E246AE17600259DD3 /* JXTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3096145D246AE17600259DD3 /* JXTextView.swift */; };
+		30961460246AE19600259DD3 /* CommentInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3096145F246AE19600259DD3 /* CommentInputView.swift */; };
 		30B5F8E6244020FA00818683 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 30B5F8E5244020FA00818683 /* AppDelegate.swift */; };
 		30B5F8ED244020FA00818683 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 30B5F8EB244020FA00818683 /* Main.storyboard */; };
 		30B5F8EF244020FB00818683 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 30B5F8EE244020FB00818683 /* Assets.xcassets */; };
@@ -74,6 +76,8 @@
 		30961452246A4CF000259DD3 /* JXLabelType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXLabelType.swift; sourceTree = "<group>"; };
 		30961455246A4EBB00259DD3 /* UIViewController+System.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+System.swift"; sourceTree = "<group>"; };
 		30961457246A4EFC00259DD3 /* JXActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXActionSheet.swift; sourceTree = "<group>"; };
+		3096145D246AE17600259DD3 /* JXTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXTextView.swift; sourceTree = "<group>"; };
+		3096145F246AE19600259DD3 /* CommentInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentInputView.swift; sourceTree = "<group>"; };
 		30B5F8E2244020FA00818683 /* mooc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mooc.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B5F8E5244020FA00818683 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30B5F8EC244020FA00818683 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -157,6 +161,7 @@
 		308DE582244595940056DC91 /* V */ = {
 			isa = PBXGroup;
 			children = (
+				3096145D246AE17600259DD3 /* JXTextView.swift */,
 				30961450246A4CF000259DD3 /* JXLabel */,
 				3096144A246A4AE000259DD3 /* CommentContentView.swift */,
 				30961448246A4ADF00259DD3 /* CommentThumbView.swift */,
@@ -170,6 +175,7 @@
 				3061D8882447382E00A2DD0F /* MomentLocationCell.swift */,
 				3061D88A24473A5800A2DD0F /* MomentBottomCell.swift */,
 				3040FDB824497DA2001FE4D9 /* MomentCommentCell.swift */,
+				3096145F246AE19600259DD3 /* CommentInputView.swift */,
 			);
 			path = V;
 			sourceTree = "<group>";
@@ -424,11 +430,13 @@
 				30B5F8E6244020FA00818683 /* AppDelegate.swift in Sources */,
 				30B5F95B244046B200818683 /* ViewController.swift in Sources */,
 				3040FDA724494DEC001FE4D9 /* UserInfo.swift in Sources */,
+				30961460246AE19600259DD3 /* CommentInputView.swift in Sources */,
 				3040FD9F24494C41001FE4D9 /* Utils.swift in Sources */,
 				30961453246A4CF000259DD3 /* JXLabel.swift in Sources */,
 				30961456246A4EBB00259DD3 /* UIViewController+System.swift in Sources */,
 				3096144C246A4AE000259DD3 /* OperateMenuView.swift in Sources */,
 				30961458246A4EFC00259DD3 /* JXActionSheet.swift in Sources */,
+				3096145E246AE17600259DD3 /* JXTextView.swift in Sources */,
 				30B5F900244024B700818683 /* Constant.swift in Sources */,
 				3040FDB924497DA2001FE4D9 /* MomentCommentCell.swift in Sources */,
 				3096144D246A4AE000259DD3 /* CommentContentView.swift in Sources */,
