@@ -47,12 +47,17 @@ class MomentBindingSection: ListBindingSectionController<ListDiffable> {
     func momentBottomCell(at index: Int) -> MomentBottomCell {
         guard let cell = collectionContext?.dequeueReusableCell(of: MomentBottomCell.self, for: self, at: index) as? MomentBottomCell else { fatalError() }
         cell.bindViewModel(object!)
-        cell.onClick = {[weak self] idx in
+        cell.onClick = {[weak self] action in
             guard let self = self else { return }
-            if idx == 0 {
+            switch action {
+            case .thumbup:
                 self.toFavor()
-            }else {
-                self.toComment()
+            case .delete:
+                self.toDelete()
+            case .comment(let text):
+                self.toComment(text)
+            case .commentDraft(let text):
+                self.toSaveDraft(text)
             }
         }
         return cell
@@ -60,6 +65,19 @@ class MomentBindingSection: ListBindingSectionController<ListDiffable> {
     func momentCommentCell(at index: Int) -> MomentCommentCell {
         guard let cell = collectionContext?.dequeueReusableCell(of: MomentCommentCell.self, for: self, at: index) as? MomentCommentCell else { fatalError() }
         cell.bindViewModel(object!)
+        cell.onClick = {[weak self] action in
+            guard let self = self else { return }
+            switch action {
+            case .avatar:
+                print("点击头像")
+            case .title:
+                print("点击title")
+            case .reply:
+                print("回复的标题")
+            case .bg:
+                print("点击背景")
+            }
+        }
         return cell
     }
 }
@@ -144,6 +162,9 @@ extension MomentBindingSection: ListBindingSectionControllerDataSource, ListBind
 }
 
 fileprivate extension MomentBindingSection {
+    func toDelete() {
+        NotificationCenter.default.post(name: NSNotification.Name.list.delete, object: object)
+    }
     /// 点赞
     func toFavor() {
         guard let object = object as? MomentInfo else { fatalError() }
@@ -153,12 +174,16 @@ fileprivate extension MomentBindingSection {
         }, completion: nil)
     }
     /// 评论
-    func toComment() {
+    func toComment(_ text: String) {
+        print("comment: \(text)")
         guard let object = object as? MomentInfo else { fatalError() }
         self.didUpdate(to: object)
         self.collectionContext?.performBatch(animated: false, updates: { (context) in
             context.reload(self)
         }, completion: nil)
+    }
+    func toSaveDraft(_ text: String) {
+        print("comment draft: \(text)")
     }
 }
 

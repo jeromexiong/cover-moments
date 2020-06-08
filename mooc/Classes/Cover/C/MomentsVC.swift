@@ -20,17 +20,19 @@ class MomentsVC: BaseListVC {
         return v
     }()
     fileprivate var contentOffsetY: CGFloat = 0
-    var contentOffset: NSObjectProtocol?
-    var location: NSObjectProtocol?
+    fileprivate var publish: NSObjectProtocol?
+    fileprivate var location: NSObjectProtocol?
+    fileprivate var delete: NSObjectProtocol?
+    fileprivate var contentOffset: NSObjectProtocol?
+    fileprivate var page: Int = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
         adapter.scrollViewDelegate = self
         view.addSubview(navView)
-        loadData()
-        addHeadRefresh()
-        addLoadMore()
         
+        loadData()
+        addRefresh()
         notification()
     }
     
@@ -44,14 +46,12 @@ class MomentsVC: BaseListVC {
         }
     }
     
-    func addHeadRefresh() {
+    func addRefresh() {
         collectionView.mj_header = MomentHeaderRefreshView(refreshingBlock: {[weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.collectionView.mj_header?.endRefreshing()
             }
         })
-    }
-    func addLoadMore() {
         collectionView.mj_footer = MJRefreshAutoNormalFooter(refreshingBlock: {[weak self] in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self?.loadData("data2")
@@ -76,11 +76,26 @@ class MomentsVC: BaseListVC {
 }
 fileprivate extension MomentsVC {
     func notification() {
+        publish = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.publish, object: nil, queue: OperationQueue.main) {[weak self] (noti) in
+            self?.loadData()
+        }
         location = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.location, object: nil, queue: OperationQueue.main) {[weak self] (noti) in
             guard let object = noti.object as? MomentInfo, let self = self else {
                 return
             }
             print("click location", object)
+        }
+        delete = NotificationCenter.default.addObserver(forName: Notification.Name.list.delete, object: nil, queue: OperationQueue.main) {[weak self] (noti) in
+            guard let object = noti.object as? MomentInfo, let self = self else {
+                return
+            }
+            self.objects.removeAll { (element) -> Bool in
+                guard let ele = element as? MomentInfo else {
+                    return false
+                }
+                return ele == object
+            }
+            self.adapter.performUpdates(animated: true, completion: nil)
         }
         contentOffset = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.contentOffset, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
             guard let delta = noti.object as? CGFloat, let self = self else {
@@ -108,6 +123,10 @@ extension MomentsVC: UIScrollViewDelegate {
 
 extension Notification.Name {
     struct list {
+        /// 发布通知
+        static let publish = Notification.Name("publish")
+        /// 删除通知
+        static let delete = Notification.Name("delete")
         /// 定位通知
         static let location = Notification.Name("location")
         /// collectionview的评论列表定位到当前通知

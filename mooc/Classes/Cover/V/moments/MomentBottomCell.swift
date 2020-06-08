@@ -8,6 +8,16 @@
 
 import Foundation
 
+enum MomentBottomAction {
+    ///  删除
+    case delete
+    /// 点赞/取消
+    case thumbup
+    /// 评论
+    case comment(String)
+    /// 草稿
+    case commentDraft(String)
+}
 class MomentBottomCell: UICollectionViewCell {
     fileprivate lazy var timeLb: UILabel = {
         let lb = UILabel()
@@ -38,8 +48,7 @@ class MomentBottomCell: UICollectionViewCell {
         return btn
     }()
     
-    /// 0: 点赞 / 1: 评论 / 2: 删除
-    var onClick: ((Int)->Void)?
+    var onClick: ((MomentBottomAction)->Void)?
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -76,14 +85,14 @@ fileprivate extension MomentBottomCell {
             OperateMenuView.show(self.moreBtn, isLiked: false) {[weak self] idx in
                 guard let `self` = self else { return }
                 if idx == 0 {
-                    self.onClick?(0)
+                    self.onClick?(.thumbup)
                 }else {
                     self.commentnputView.show()
                 }
             }
         case 1:
             // delete
-            self.onClick?(2)
+            self.onClick?(.delete)
         default:
             break
         }
@@ -103,10 +112,12 @@ extension MomentBottomCell: CommentInputViewDelegate {
     }
     
     func onTextChanged(_ text: String) {
-        
+        self.onClick?(.commentDraft(text))
     }
     
     func onSend(_ text: String) {
-        print(text)
+        if !text.isEmpty {
+            self.onClick?(.comment(text))
+        }
     }
 }

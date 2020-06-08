@@ -14,6 +14,7 @@ class CommentContentView: UICollectionView {
             reloadData()
         }
     }
+    var onClick: ((CommentContentClickAction)->Void)?
     
     init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
@@ -45,21 +46,7 @@ extension CommentContentView: UICollectionViewDataSource, UICollectionViewDelega
         cell.imageIV.kf.setImage(with: URL(string: model.avatar_url), placeholder: UIImage(named: "默认头像"))
         cell.titleBtn.setTitle(model.person, for: .normal)
         cell.setContent(model.comment, parent: indexPath.item%2==0 ?nil:"xxx")
-        cell.onClick = {[weak self] idx in
-            guard let self = self else { return }
-            switch idx {
-            case 0:
-                print("点击头像")
-            case 1:
-                print("点击title")
-            case 2:
-                print("回复的标题")
-            case 10:
-                print("点击背景")
-            default:
-                break
-            }
-        }
+        cell.onClick = onClick
         return cell
     }
     
@@ -69,6 +56,16 @@ extension CommentContentView: UICollectionViewDataSource, UICollectionViewDelega
     }
 }
 
+enum CommentContentClickAction {
+    /// 点击头像
+    case avatar
+    /// 点击title
+    case title
+    /// 回复的标题
+    case reply
+    /// 点击背景
+    case bg
+}
 class CommentContentCell: UICollectionViewCell {
     lazy var imageIV: UIImageView = {
         let iv = UIImageView()
@@ -101,8 +98,8 @@ class CommentContentCell: UICollectionViewCell {
         v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
         return v
     }()
-    /// 0 头像 1 标题 2 回复的标题 10 背景
-    var onClick: ((Int)->Void)?
+    
+    var onClick: ((CommentContentClickAction)->Void)?
     func setContent(_ text: String, parent: String?) {
         contentLb.text = parent == nil ? text : "回复\(parent!)：\(text)"
     }
@@ -141,7 +138,7 @@ class CommentContentCell: UICollectionViewCell {
         lb.customColor = [reply: mDarkBlueColor]
         lb.enabledTypes = [.URL, .phone, reply]
         lb.handleCustomTap(reply) {[weak self] (text) in
-            self?.onClick?(2)
+            self?.onClick?(.reply)
         }
         lb.handleURLTap { (text) in
             print(text)
@@ -155,11 +152,11 @@ class CommentContentCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     @objc private func viewClick(_ ges: UIGestureRecognizer) {
-        onClick?(ges.view?.tag ?? 10)
+        let avatar = ges.view?.tag == 0
+        onClick?(avatar ? .avatar : .bg)
     }
     @objc private func click(_ btn: UIButton) {
-        onClick?(1)
+        onClick?(.title)
     }
     
 }
-

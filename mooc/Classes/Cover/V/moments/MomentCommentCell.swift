@@ -34,6 +34,7 @@ class MomentCommentCell: UICollectionViewCell {
     }()
     fileprivate lazy var commentView: CommentContentView = {
         let view = CommentContentView(frame: .zero)
+        view.onClick = onClick
         return view
     }()
     fileprivate lazy var divisionV: UIView = {
@@ -48,6 +49,7 @@ class MomentCommentCell: UICollectionViewCell {
         v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
         return v
     }()
+    var onClick: ((CommentContentClickAction)->Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
