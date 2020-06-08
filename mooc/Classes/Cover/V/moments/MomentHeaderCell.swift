@@ -1,28 +1,28 @@
 //
-//  MomentHeaderImageCell.swift
+//  MomentHeaderCell.swift
 //  mooc
 //
-//  Created by Jerome Xiong on 2020/4/16.
+//  Created by Jerome Xiong on 2020/4/14.
 //  Copyright © 2020 kilomind. All rights reserved.
 //
 
 import Kingfisher
 
-/// 单张图片显示
-class MomentHeaderImageCell: UICollectionViewCell {
+/// 多张图片显示
+class MomentHeaderCell: UICollectionViewCell {
     static let padding: CGFloat = 16
     static let contentLeft = padding+10+50
     static let contentW = mScreenW-padding-contentLeft
     fileprivate lazy var avatarIV: UIImageView = {
         let iv = UIImageView()
-        iv.frame = CGRect(x: MomentHeaderCell.padding, y: 0, width: 50, height: 50)
+        iv.frame = CGRect(x: MomentHeaderCell.padding, y: 10, width: 50, height: 50)
         iv.layer.cornerRadius = 10
         iv.layer.masksToBounds = true
         return iv
     }()
     fileprivate lazy var usernameLb: UILabel = {
         let lb = UILabel()
-        lb.frame = CGRect(x: avatarIV.frame.maxX+10, y: 2, width: MomentHeaderCell.contentW, height: 20)
+        lb.frame = CGRect(x: avatarIV.frame.maxX+10, y: 12, width: MomentHeaderCell.contentW, height: 20)
         lb.textColor = mCoverColor
         lb.font = UIFont.boldSystemFont(ofSize: 17)
         return lb
@@ -34,24 +34,18 @@ class MomentHeaderImageCell: UICollectionViewCell {
         lb.numberOfLines = 0
         return lb
     }()
-    /// 单张图片
-    fileprivate lazy var singleIV: UIImageView = {
-        let iv = UIImageView()
-        iv.frame = contentLb.frame
-        iv.clipsToBounds = true
-        iv.autoresizesSubviews = true
-        iv.clearsContextBeforeDrawing = true
-        iv.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(previewImage))
-        iv.addGestureRecognizer(tap)
-        return iv
+    fileprivate lazy var nineImageView: NineImageView = {
+        let view = NineImageView(frame: .zero)
+        view.frame = contentLb.frame
+        view.frame.size.width -= 50
+        return view
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
@@ -61,7 +55,7 @@ class MomentHeaderImageCell: UICollectionViewCell {
         addSubview(avatarIV)
         addSubview(usernameLb)
         addSubview(contentLb)
-        addSubview(singleIV)
+        addSubview(nineImageView)
         setLabel()
     }
     func setLabel() {
@@ -75,12 +69,9 @@ class MomentHeaderImageCell: UICollectionViewCell {
             print(text)
         }
     }
-    @objc func previewImage() {
-        PhotoManager.previewImage(singleIV)
-    }
 }
 
-extension MomentHeaderImageCell: ListBindable {
+extension MomentHeaderCell: ListBindable {
     func bindViewModel(_ viewModel: Any) {
         guard let viewModel = viewModel as? MomentInfo else { return }
         self.avatarIV.kf.setImage(with: URL(string: viewModel.avatar))
@@ -93,16 +84,14 @@ extension MomentHeaderImageCell: ListBindable {
         }else {
             contentLb.frame.size.height = 0
         }
-        
+        // 不能通过if判断切换同一位置的显示视图
         if viewModel.images.count > 0 {
             let maxY = contentLb.frame.maxY + 10
-            singleIV.kf.setImage(with: URL(string: viewModel.images[0]))
-            singleIV.frame.origin.y = maxY
-            singleIV.frame.size.height = viewModel.momentPicsHeight(viewModel.images.count)
-            singleIV.frame.size.width = singleIV.frame.size.height
+            nineImageView.images = viewModel.images
+            nineImageView.frame.origin.y = maxY
+            nineImageView.frame.size.height = viewModel.momentPicsHeight(viewModel.images.count)
         }else {
-            singleIV.frame.size.height = 0
+            nineImageView.frame.size.height = 0
         }
     }
 }
-

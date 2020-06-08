@@ -8,14 +8,11 @@
 
 import Foundation
 
-private let paddingBottom: CGFloat = 10
 class MomentCommentCell: UICollectionViewCell {
     fileprivate lazy var contentV: UIView = {
         let v = UIView()
-        v.frame = self.bounds
-        v.frame.origin.x = MomentHeaderCell.padding
-        v.frame.size.width -= MomentHeaderCell.padding*2
-        v.frame.size.height -= paddingBottom
+        let x = MomentHeaderCell.padding
+        v.frame = CGRect(x: x, y: 10, width: bounds.width-x*2, height: 0)
         v.backgroundColor = UIColor.groupTableViewBackground.withAlphaComponent(0.5)
         v.layer.cornerRadius = 5
         v.layer.masksToBounds = true
@@ -39,9 +36,15 @@ class MomentCommentCell: UICollectionViewCell {
         let view = CommentContentView(frame: .zero)
         return view
     }()
+    fileprivate lazy var divisionV: UIView = {
+        let v = UIView()
+        v.frame = CGRect(x: 0, y: 0, width: contentV.bounds.width, height: 1)
+        v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
+        return v
+    }()
     fileprivate lazy var separatorV: UIView = {
         let v = UIView(frame: bounds)
-        v.frame = CGRect(x: 0, y: bounds.height-paddingBottom, width: bounds.width, height: 1)
+        v.frame = CGRect(x: 0, y: bounds.height-1, width: bounds.width, height: 1)
         v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
         return v
     }()
@@ -61,6 +64,7 @@ class MomentCommentCell: UICollectionViewCell {
         contentV.addSubview(thumbIcon)
         contentV.addSubview(thumbView)
         
+        contentV.addSubview(divisionV)
         contentV.addSubview(commentIcon)
         contentV.addSubview(commentView)
         
@@ -75,15 +79,17 @@ class MomentCommentCell: UICollectionViewCell {
 extension MomentCommentCell: ListBindable {
     func bindViewModel(_ viewModel: Any) {
         guard let viewModel = viewModel as? MomentInfo else { return }
+        contentV.frame.size.height = viewModel.contentHeight
         
-        contentV.isHidden = viewModel.comments.count == 0
         let minX = thumbIcon.frame.maxX + thumbIcon.frame.minX
         thumbView.frame = CGRect(x: minX, y: 5, width: contentV.bounds.width-minX, height: viewModel.thumbsHeight-10)
         thumbView.images = viewModel.comments.map({$0.avatar_url})
-        separatorV.frame.origin.y = thumbView.frame.maxY+5-separatorV.frame.height
         
-        commentIcon.frame.origin.y = thumbIcon.frame.minY + separatorV.frame.maxY
-        commentView.frame = CGRect(x: minX, y: separatorV.frame.maxY, width: thumbView.bounds.width, height: viewModel.commentHeight)
+        divisionV.frame.origin.y = thumbView.frame.maxY+5-divisionV.frame.height
+        divisionV.isHidden = viewModel.comments.count == 0
+        
+        commentIcon.frame.origin.y = thumbIcon.frame.minY + divisionV.frame.maxY
+        commentView.frame = CGRect(x: minX, y: divisionV.frame.maxY, width: thumbView.bounds.width, height: viewModel.commentHeight)
         commentView.comments = viewModel.comments
     }
 }

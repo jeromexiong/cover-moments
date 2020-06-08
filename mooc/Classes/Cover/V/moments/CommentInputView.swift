@@ -8,6 +8,14 @@
 
 import Foundation
 
+protocol CommentInputViewDelegate: NSObjectProtocol {
+    /// 容器高度变化通知
+    func onTopChanged(_ top: CGFloat) -> Void
+    /// 输入文本
+    func onTextChanged(_ text: String) -> Void
+    /// 点击发送
+    func onSend(_ text: String) -> Void
+}
 class CommentInputView: UIView {
     fileprivate(set) lazy var contentView: UIView = {
         let v = UIView()
@@ -34,11 +42,10 @@ class CommentInputView: UIView {
     /// 容器高度
     fileprivate(set) var ctTop: CGFloat = 0 {
         didSet {
-            self.onTopChanged?(ctTop)
+            delegate?.onTopChanged(ctTop)
         }
     }
-    /// 容器高度变化通知
-    var onTopChanged: ((CGFloat)->Void)?
+    weak var delegate: CommentInputViewDelegate?
     fileprivate(set) lazy var textView: JXTextView = {
         let tv = JXTextView()
         tv.backgroundColor = .white
@@ -48,7 +55,7 @@ class CommentInputView: UIView {
         tv.enablesReturnKeyAutomatically = true
         tv.showsVerticalScrollIndicator = false
         tv.showsHorizontalScrollIndicator = false
-        tv.layer.cornerRadius = 4
+        tv.layer.cornerRadius = 5
         tv.layer.masksToBounds = true
         tv.font = UIFont.systemFont(ofSize: 16)
         tv.frame = CGRect(x: 15, y: surplusHeight/2, width: mScreenW-30, height: contentMinHeight-surplusHeight)
@@ -104,7 +111,8 @@ fileprivate extension CommentInputView {
             case .change(_):
                 self.updateHeight(self.textView.autoHeight)
             case .done:
-                print("done")
+                self.delegate?.onSend(self.textView.text)
+                self.resignFirstResponder()
             default:
                 break
             }

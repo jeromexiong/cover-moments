@@ -78,7 +78,7 @@
 		30961457246A4EFC00259DD3 /* JXActionSheet.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXActionSheet.swift; sourceTree = "<group>"; };
 		3096145D246AE17600259DD3 /* JXTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JXTextView.swift; sourceTree = "<group>"; };
 		3096145F246AE19600259DD3 /* CommentInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommentInputView.swift; sourceTree = "<group>"; };
-		30B5F8E2244020FA00818683 /* mooc.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mooc.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		30B5F8E2244020FA00818683 /* listdemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = listdemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		30B5F8E5244020FA00818683 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		30B5F8EC244020FA00818683 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		30B5F8EE244020FB00818683 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -128,6 +128,25 @@
 			path = headRefresh;
 			sourceTree = "<group>";
 		};
+		3047FE60248E7EF3005BB5A1 /* moments */ = {
+			isa = PBXGroup;
+			children = (
+				3040FDA124494CE8001FE4D9 /* MomentTopCell.swift */,
+				308DE5B32445C7B60056DC91 /* MomentHeaderCell.swift */,
+				3040FDA024494CE8001FE4D9 /* MomentHeaderImageCell.swift */,
+				308DE5B92445D9A40056DC91 /* NineImageView.swift */,
+				3061D8882447382E00A2DD0F /* MomentLocationCell.swift */,
+				3061D88A24473A5800A2DD0F /* MomentBottomCell.swift */,
+				3040FDB824497DA2001FE4D9 /* MomentCommentCell.swift */,
+				3096145F246AE19600259DD3 /* CommentInputView.swift */,
+				3096144A246A4AE000259DD3 /* CommentContentView.swift */,
+				30961448246A4ADF00259DD3 /* CommentThumbView.swift */,
+				30961449246A4AE000259DD3 /* OperateMenuView.swift */,
+				3040FDA224494CE8001FE4D9 /* NavView.swift */,
+			);
+			path = moments;
+			sourceTree = "<group>";
+		};
 		308DE57F244595940056DC91 /* Cover */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,21 +180,10 @@
 		308DE582244595940056DC91 /* V */ = {
 			isa = PBXGroup;
 			children = (
+				3047FE60248E7EF3005BB5A1 /* moments */,
 				3096145D246AE17600259DD3 /* JXTextView.swift */,
 				30961450246A4CF000259DD3 /* JXLabel */,
-				3096144A246A4AE000259DD3 /* CommentContentView.swift */,
-				30961448246A4ADF00259DD3 /* CommentThumbView.swift */,
-				30961449246A4AE000259DD3 /* OperateMenuView.swift */,
 				3040FDB024495F97001FE4D9 /* headRefresh */,
-				3040FDA024494CE8001FE4D9 /* MomentHeaderImageCell.swift */,
-				3040FDA124494CE8001FE4D9 /* MomentTopCell.swift */,
-				3040FDA224494CE8001FE4D9 /* NavView.swift */,
-				308DE5B32445C7B60056DC91 /* MomentHeaderCell.swift */,
-				308DE5B92445D9A40056DC91 /* NineImageView.swift */,
-				3061D8882447382E00A2DD0F /* MomentLocationCell.swift */,
-				3061D88A24473A5800A2DD0F /* MomentBottomCell.swift */,
-				3040FDB824497DA2001FE4D9 /* MomentCommentCell.swift */,
-				3096145F246AE19600259DD3 /* CommentInputView.swift */,
 			);
 			path = V;
 			sourceTree = "<group>";
@@ -238,7 +246,7 @@
 		30B5F8E3244020FA00818683 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				30B5F8E2244020FA00818683 /* mooc.app */,
+				30B5F8E2244020FA00818683 /* listdemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -324,7 +332,7 @@
 			);
 			name = mooc;
 			productName = mooc;
-			productReference = 30B5F8E2244020FA00818683 /* mooc.app */;
+			productReference = 30B5F8E2244020FA00818683 /* listdemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -608,7 +616,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = jx.coverlist.demo;
-				PRODUCT_NAME = mooc;
+				PRODUCT_NAME = listdemo;
 				SWIFT_OBJC_BRIDGING_HEADER = "mooc/mooc-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -632,7 +640,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = jx.coverlist.demo;
-				PRODUCT_NAME = mooc;
+				PRODUCT_NAME = listdemo;
 				SWIFT_OBJC_BRIDGING_HEADER = "mooc/mooc-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

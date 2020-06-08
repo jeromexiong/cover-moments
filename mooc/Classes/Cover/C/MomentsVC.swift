@@ -21,6 +21,7 @@ class MomentsVC: BaseListVC {
     }()
     fileprivate var contentOffsetY: CGFloat = 0
     var contentOffset: NSObjectProtocol?
+    var location: NSObjectProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,13 +31,7 @@ class MomentsVC: BaseListVC {
         addHeadRefresh()
         addLoadMore()
         
-        contentOffset = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.contentOffset, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
-            guard let delta = noti.object as? CGFloat, let self = self else {
-                return
-            }
-            let offsetY = self.collectionView.contentOffset.y - delta
-            self.collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: false)
-        })
+        notification()
     }
     
     override func listAdapter(_ listAdapter: ListAdapter, sectionControllerFor object: Any) -> ListSectionController {
@@ -79,6 +74,23 @@ class MomentsVC: BaseListVC {
         }
     }
 }
+fileprivate extension MomentsVC {
+    func notification() {
+        location = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.location, object: nil, queue: OperationQueue.main) {[weak self] (noti) in
+            guard let object = noti.object as? MomentInfo, let self = self else {
+                return
+            }
+            print("click location", object)
+        }
+        contentOffset = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.contentOffset, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
+            guard let delta = noti.object as? CGFloat, let self = self else {
+                return
+            }
+            let offsetY = self.collectionView.contentOffset.y - delta
+            self.collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: false)
+        })
+    }
+}
 extension MomentsVC: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         contentOffsetY = scrollView.contentOffset.y
@@ -96,6 +108,8 @@ extension MomentsVC: UIScrollViewDelegate {
 
 extension Notification.Name {
     struct list {
+        /// 定位通知
+        static let location = Notification.Name("location")
         /// collectionview的评论列表定位到当前通知
         static let contentOffset = Notification.Name("contentOffset")
     }

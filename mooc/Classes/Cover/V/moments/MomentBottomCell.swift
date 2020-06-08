@@ -11,7 +11,6 @@ import Foundation
 class MomentBottomCell: UICollectionViewCell {
     fileprivate lazy var timeLb: UILabel = {
         let lb = UILabel()
-        lb.frame.origin = CGPoint(x: MomentHeaderCell.contentLeft, y: 0)
         lb.sizeToFit()
         lb.textColor = UIColor.jx_color(hex: "#BCBBBD")
         lb.font = UIFont.systemFont(ofSize: 13)
@@ -28,7 +27,7 @@ class MomentBottomCell: UICollectionViewCell {
     }()
     fileprivate lazy var moreBtn: UIButton = {
         let btn = UIButton(type: .custom)
-        btn.frame = CGRect(x: mScreenW-MomentHeaderCell.padding-30, y: 0, width: 30, height: 20)
+        btn.frame = CGRect(x: mScreenW-MomentHeaderCell.padding-30, y: 5, width: 30, height: 20)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 20)
         btn.setTitleColor(mCoverColor, for: .normal)
         btn.setTitle("··", for: .normal)
@@ -52,10 +51,7 @@ class MomentBottomCell: UICollectionViewCell {
     }
     fileprivate lazy var commentnputView: CommentInputView = {
         let inputView = CommentInputView()
-        inputView.onTopChanged = {[weak self] top in
-            guard let self = self else { return }
-            inputView.scrollForComment(self)
-        }
+        inputView.delegate = self
         return inputView
     }()
 }
@@ -64,6 +60,10 @@ fileprivate extension MomentBottomCell {
         addSubview(timeLb)
         addSubview(deleteBtn)
         addSubview(moreBtn)
+        
+        timeLb.translatesAutoresizingMaskIntoConstraints = false
+        addConstraint(NSLayoutConstraint(item: timeLb, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: MomentHeaderCell.contentLeft))
+        addConstraint(NSLayoutConstraint(item: timeLb, attribute: .centerY, relatedBy: .equal, toItem: moreBtn, attribute: .centerY, multiplier: 1, constant: 0))
         
         deleteBtn.translatesAutoresizingMaskIntoConstraints = false
         addConstraint(NSLayoutConstraint(item: deleteBtn, attribute: .leading, relatedBy: .equal, toItem: timeLb, attribute: .trailing, multiplier: 1, constant: 10))
@@ -95,5 +95,18 @@ extension MomentBottomCell: ListBindable {
         timeLb.text = viewModel.publicTime
         timeLb.sizeToFit()
         deleteBtn.isHidden = false
+    }
+}
+extension MomentBottomCell: CommentInputViewDelegate {
+    func onTopChanged(_ top: CGFloat) {
+        commentnputView.scrollForComment(self)
+    }
+    
+    func onTextChanged(_ text: String) {
+        
+    }
+    
+    func onSend(_ text: String) {
+        print(text)
     }
 }

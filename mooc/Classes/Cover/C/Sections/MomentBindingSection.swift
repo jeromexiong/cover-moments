@@ -47,6 +47,14 @@ class MomentBindingSection: ListBindingSectionController<ListDiffable> {
     func momentBottomCell(at index: Int) -> MomentBottomCell {
         guard let cell = collectionContext?.dequeueReusableCell(of: MomentBottomCell.self, for: self, at: index) as? MomentBottomCell else { fatalError() }
         cell.bindViewModel(object!)
+        cell.onClick = {[weak self] idx in
+            guard let self = self else { return }
+            if idx == 0 {
+                self.toFavor()
+            }else {
+                self.toComment()
+            }
+        }
         return cell
     }
     func momentCommentCell(at index: Int) -> MomentCommentCell {
@@ -112,7 +120,9 @@ extension MomentBindingSection: ListBindingSectionControllerDataSource, ListBind
         case .bottom:
             return CGSize(width: width, height: 30)
         case .comment:
-            return CGSize(width: width, height: object.thumbsHeight + object.commentHeight + 10)
+            var height = object.contentHeight
+            height += object.contentHeight > 0 ? 20 : 10
+            return CGSize(width: width, height: height)
         }
     }
     
@@ -131,7 +141,24 @@ extension MomentBindingSection: ListBindingSectionControllerDataSource, ListBind
     func sectionController(_ sectionController: ListBindingSectionController<ListDiffable>, didUnhighlightItemAt index: Int, viewModel: Any) {
         
     }
-    
-    
+}
+
+fileprivate extension MomentBindingSection {
+    /// 点赞
+    func toFavor() {
+        guard let object = object as? MomentInfo else { fatalError() }
+        self.didUpdate(to: object)
+        self.collectionContext?.performBatch(animated: false, updates: { (context) in
+            context.reload(self)
+        }, completion: nil)
+    }
+    /// 评论
+    func toComment() {
+        guard let object = object as? MomentInfo else { fatalError() }
+        self.didUpdate(to: object)
+        self.collectionContext?.performBatch(animated: false, updates: { (context) in
+            context.reload(self)
+        }, completion: nil)
+    }
 }
 

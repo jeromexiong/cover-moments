@@ -40,7 +40,7 @@ class MomentInfo: Codable {
     }
     
     var cellHeight: CGFloat {
-        var cellHeight: CGFloat = 20 + 10
+        var cellHeight: CGFloat = 10 + 20 + 10
         
         if !content.isEmpty {
             let size = content.textSize(MomentHeaderCell.contentW, font: UIFont.systemFont(ofSize: 17))
@@ -71,11 +71,14 @@ class MomentInfo: Codable {
     var thumbsHeight: CGFloat {
         let verticalSpace: CGFloat = 5
         let rows = comments.count / 7 + (comments.count % 7 > 0 ? 1 : 0)
-        let vertical = CGFloat(rows+1)*verticalSpace
+        let vertical = CGFloat(rows) * verticalSpace * 2
         return CGFloat(rows) * CommentThumbView.itemWidth + vertical
     }
     var commentHeight: CGFloat {
         return CGFloat(comments.count * 50)
+    }
+    var contentHeight: CGFloat {
+        return thumbsHeight + commentHeight
     }
 }
 
