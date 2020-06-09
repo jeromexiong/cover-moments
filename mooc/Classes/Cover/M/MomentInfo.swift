@@ -39,12 +39,16 @@ class MomentInfo: Codable {
         comments = list
     }
     
+    /// 文字是否展开
+    var isTextExpend: Bool = false
+}
+extension MomentInfo {
     var cellHeight: CGFloat {
         var cellHeight: CGFloat = 10 + 20 + 10
         
         if !content.isEmpty {
-            let size = content.textSize(MomentHeaderCell.contentW, font: UIFont.systemFont(ofSize: 17))
-            cellHeight += size.height
+            let expendH: CGFloat = isNeedExpend ? 30 : 0
+            cellHeight += textHeight + expendH
         }
         
         if images.count > 0 {
@@ -54,7 +58,16 @@ class MomentInfo: Codable {
 
         return cellHeight
     }
-    
+    /// 文字是否需要展开
+    var isNeedExpend: Bool {
+        let lines = content.textLines(MomentHeaderCell.contentW, font: UIFont.systemFont(ofSize: 17))
+        return lines.count > 3
+    }
+    var textHeight: CGFloat {
+        let lines = content.textLines(MomentHeaderCell.contentW, font: UIFont.systemFont(ofSize: 17))
+        
+        return UIFont.systemFont(ofSize: 17).lineHeight * CGFloat((lines.count > 3 && !isTextExpend ? 3 : lines.count))
+    }
     func momentPicsHeight(_ picCount: Int) -> CGFloat {
         let verticalSpace: CGFloat = 5
         if picCount == 1 {

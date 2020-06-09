@@ -32,11 +32,17 @@ class MomentBindingSection: ListBindingSectionController<ListDiffable> {
     func momentHeaderCell(at index: Int) -> MomentHeaderCell {
         guard let cell = collectionContext?.dequeueReusableCell(of: MomentHeaderCell.self, for: self, at: index) as? MomentHeaderCell else { fatalError() }
         cell.bindViewModel(object!)
+        cell.onClick = {[weak self] idx in
+            self?.toExpend()
+        }
         return cell
     }
     func momentHeaderImageCell(at index: Int) -> MomentHeaderImageCell {
         guard let cell = collectionContext?.dequeueReusableCell(of: MomentHeaderImageCell.self, for: self, at: index) as? MomentHeaderImageCell else { fatalError() }
         cell.bindViewModel(object!)
+        cell.onClick = {[weak self] idx in
+            self?.toExpend()
+        }
         return cell
     }
     func momentLocationCell(at index: Int) -> MomentLocationCell {
@@ -150,6 +156,14 @@ extension MomentBindingSection: ListBindingSectionControllerDataSource, ListBind
 }
 
 fileprivate extension MomentBindingSection {
+    func toExpend() {
+        guard let object = object as? MomentInfo else { fatalError() }
+        object.isTextExpend = !object.isTextExpend
+        self.didUpdate(to: object)
+        self.collectionContext?.performBatch(animated: false, updates: { (context) in
+            context.reload(self)
+        }, completion: nil)
+    }
     func toDelete() {
         NotificationCenter.default.post(name: NSNotification.Name.list.delete, object: object)
     }

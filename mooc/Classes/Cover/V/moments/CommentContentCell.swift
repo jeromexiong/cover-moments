@@ -23,7 +23,7 @@ enum CommentContentClickAction {
     case commentDraft(String)
 }
 class CommentContentCell: UICollectionViewCell {
-    lazy var imageIV: UIImageView = {
+    fileprivate lazy var imageIV: UIImageView = {
         let iv = UIImageView()
         iv.layer.cornerRadius = 5
         iv.layer.masksToBounds = true
@@ -32,14 +32,14 @@ class CommentContentCell: UICollectionViewCell {
         iv.addGestureRecognizer(tap)
         return iv
     }()
-    lazy var titleBtn: UIButton = {
+    fileprivate lazy var titleBtn: UIButton = {
         let btn = UIButton(type: .custom)
         btn.setTitleColor(mDarkBlueColor, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 14)
         btn.addTarget(self, action: #selector(click(_:)), for: .touchUpInside)
         return btn
     }()
-    lazy var contentLb: JXLabel = {
+    fileprivate lazy var contentLb: JXLabel = {
         let lb = JXLabel()
         lb.font = UIFont.systemFont(ofSize: 14)
         lb.textColor = mBlackColor
@@ -60,15 +60,22 @@ class CommentContentCell: UICollectionViewCell {
         return inputView
     }()
     /// 是否是自己的评论
-    var isSelf = false
-    var onClick: ((CommentContentClickAction)->Void)?
-    func setContent(_ text: String, parent: String?) {
-        if let parent = parent, !parent.isEmpty {
-            contentLb.text = "回复\(parent)：\(text)"
-        }else {
-            contentLb.text = text
+    fileprivate var isSelf = false
+    var comment: CommentInfo! {
+        didSet {
+            imageIV.kf.setImage(with: URL(string: comment.avatar_url), placeholder: UIImage(named: "默认头像"))
+            titleBtn.setTitle(comment.person, for: .normal)
+
+            let reply: String? = "xxx"
+            if let parent = reply, !parent.isEmpty {
+                contentLb.text = "回复\(parent)：\(comment.comment)"
+            }else {
+                contentLb.text = comment.comment
+            }
+            isSelf = false
         }
     }
+    var onClick: ((CommentContentClickAction)->Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -120,6 +127,7 @@ class CommentContentCell: UICollectionViewCell {
     @objc private func viewClick(_ ges: UIGestureRecognizer) {
         let avatar = ges.view?.tag == 0
         if !isSelf {
+            self.commentnputView.textView.placeholder = "回复\(comment.person)："
             self.commentnputView.show()
         }
         onClick?(avatar ? .avatar : .bg(isSelf))

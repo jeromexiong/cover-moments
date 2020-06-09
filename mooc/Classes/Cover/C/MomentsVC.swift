@@ -24,6 +24,8 @@ class MomentsVC: BaseListVC {
     fileprivate var location: NSObjectProtocol?
     fileprivate var delete: NSObjectProtocol?
     fileprivate var contentOffset: NSObjectProtocol?
+    fileprivate var push: NSObjectProtocol?
+    fileprivate var openURL: NSObjectProtocol?
     fileprivate var page: Int = 1
     
     override func viewDidLoad() {
@@ -104,6 +106,18 @@ fileprivate extension MomentsVC {
             let offsetY = self.collectionView.contentOffset.y - delta
             self.collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: false)
         })
+        push = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.push, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
+            guard let userId = noti.object as? Int, let self = self else {
+                return
+            }
+            print(userId)
+        })
+        openURL = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.openURL, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
+            guard let url = noti.object as? URL, let self = self else {
+                return
+            }
+            print(url)
+        })
     }
 }
 extension MomentsVC: UIScrollViewDelegate {
@@ -131,5 +145,9 @@ extension Notification.Name {
         static let location = Notification.Name("list-location")
         /// collectionview的评论列表定位到当前通知
         static let contentOffset = Notification.Name("list-contentOffset")
+        /// 跳转通知
+        static let push = Notification.Name("list-push")
+        /// 打开URL通知
+        static let openURL = Notification.Name("list-openURL")
     }
 }

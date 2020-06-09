@@ -43,9 +43,7 @@ extension CommentContentView: UICollectionViewDataSource, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommentContentCell", for: indexPath) as! CommentContentCell
         let model = comments[indexPath.item]
-        cell.imageIV.kf.setImage(with: URL(string: model.avatar_url), placeholder: UIImage(named: "默认头像"))
-        cell.titleBtn.setTitle(model.person, for: .normal)
-        cell.setContent(model.comment, parent: indexPath.item%2==0 ?nil:"xxx")
+        cell.comment = model
         cell.onClick = {[weak self] action in
             self?.actionDelegate?.contentDidSelected(model, action: action)
         }
