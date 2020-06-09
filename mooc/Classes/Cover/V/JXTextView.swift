@@ -37,6 +37,15 @@ class JXTextView: UITextView {
     }
     var maxCount: Int = 200
     var onKeyAction: ((TextAction)->Void)?
+    fileprivate var textObservation: NSKeyValueObservation?
+    /// 自动计算高度
+    var autoHeight: CGFloat {
+        let size = CGSize(width: self.bounds.width, height: CGFloat.greatestFiniteMagnitude)
+        let constraint = self.sizeThatFits(size)
+        return constraint.height
+    }
+    /// 是否允许换行
+    var lineBreak = true
     
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
@@ -51,11 +60,13 @@ class JXTextView: UITextView {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    /// 自动计算高度
-    var autoHeight: CGFloat {
-        let size = CGSize(width: self.bounds.width, height: CGFloat.greatestFiniteMagnitude)
-        let constraint = self.sizeThatFits(size)
-        return constraint.height
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if responds(to: #selector(setter: UITextView.textContainerInset)) {
+            placeholderLb.frame.origin.x = textContainerInset.left + 5
+            placeholderLb.frame.origin.y = textContainerInset.top
+        }
     }
 }
 fileprivate extension JXTextView {
@@ -63,6 +74,9 @@ fileprivate extension JXTextView {
         addSubview(placeholderLb)
         delegate = self
         
+        textObservation = observe(\.text, changeHandler: { (tv, change) in
+            self.placeholderLb.isHidden = tv.hasText
+        })
         NotificationCenter.default.addObserver(self, selector: #selector(textChanged(n:)), name: UITextView.textDidChangeNotification, object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChanged(n:)), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -85,6 +99,10 @@ extension JXTextView: UITextViewDelegate {
         onKeyAction?(.change(text: textView.text))
     }
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if !lineBreak && text == "\n" {
+            onKeyAction?(.done)
+            return false
+        }
         if textView.text.count >= maxCount {
             textView.text = String(textView.text.prefix(maxCount-1))
             return false

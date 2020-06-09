@@ -51,6 +51,7 @@ class CommentInputView: UIView {
         tv.backgroundColor = .white
         tv.textColor = mBlackColor
         tv.placeholder = "评论"
+        tv.lineBreak = false
         tv.returnKeyType = .send
         tv.enablesReturnKeyAutomatically = true
         tv.showsVerticalScrollIndicator = false
@@ -70,12 +71,16 @@ class CommentInputView: UIView {
         UIApplication.shared.keyWindow?.addSubview(self)
         textView.becomeFirstResponder()
     }
+    func dismiss() {
+        textView.resignFirstResponder()
+        removeFromSuperview()
+    }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let currentPoint = touches.first?.location(in: superview) else {
             return
         }
         if !contentView.frame.contains(currentPoint) {
-            textView.resignFirstResponder()
+            dismiss()
         }
     }
     
@@ -111,8 +116,8 @@ fileprivate extension CommentInputView {
             case .change(_):
                 self.updateHeight(self.textView.autoHeight)
             case .done:
+                self.dismiss()
                 self.delegate?.onSend(self.textView.text)
-                self.resignFirstResponder()
             default:
                 break
             }

@@ -93,7 +93,7 @@ fileprivate extension MomentsVC {
                 guard let ele = element as? MomentInfo else {
                     return false
                 }
-                return ele == object
+                return ele.id == object.id
             }
             self.adapter.performUpdates(animated: true, completion: nil)
         }
@@ -124,12 +124,12 @@ extension MomentsVC: UIScrollViewDelegate {
 extension Notification.Name {
     struct list {
         /// 发布通知
-        static let publish = Notification.Name("publish")
+        static let publish = Notification.Name("list-publish")
         /// 删除通知
-        static let delete = Notification.Name("delete")
+        static let delete = Notification.Name("list-delete")
         /// 定位通知
-        static let location = Notification.Name("location")
+        static let location = Notification.Name("list-location")
         /// collectionview的评论列表定位到当前通知
-        static let contentOffset = Notification.Name("contentOffset")
+        static let contentOffset = Notification.Name("list-contentOffset")
     }
 }

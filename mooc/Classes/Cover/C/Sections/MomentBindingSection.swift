@@ -65,19 +65,7 @@ class MomentBindingSection: ListBindingSectionController<ListDiffable> {
     func momentCommentCell(at index: Int) -> MomentCommentCell {
         guard let cell = collectionContext?.dequeueReusableCell(of: MomentCommentCell.self, for: self, at: index) as? MomentCommentCell else { fatalError() }
         cell.bindViewModel(object!)
-        cell.onClick = {[weak self] action in
-            guard let self = self else { return }
-            switch action {
-            case .avatar:
-                print("点击头像")
-            case .title:
-                print("点击title")
-            case .reply:
-                print("回复的标题")
-            case .bg:
-                print("点击背景")
-            }
-        }
+        cell.actionDelegate = self
         return cell
     }
 }
@@ -187,3 +175,27 @@ fileprivate extension MomentBindingSection {
     }
 }
 
+extension MomentBindingSection: MomentCommentDelegate {
+    func contentDidSelected(_ model: CommentInfo, action: CommentContentClickAction) {
+        print(action, model)
+        switch action {
+        case .avatar:
+            print("点击头像")
+        case .title:
+            print("点击title")
+        case .reply:
+            print("回复的标题")
+        case .bg(let isSelf):
+            print("点击背景 \(isSelf)")
+        case .comment(let text):
+            print("评论: \(text)")
+            toComment(text)
+        case .commentDraft(let text):
+            print("评论草稿: \(text)")
+        }
+    }
+    
+    func thumbDidSelected(_ model: CommentInfo) {
+        print(model)
+    }
+}

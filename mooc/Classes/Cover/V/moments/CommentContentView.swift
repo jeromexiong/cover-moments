@@ -14,7 +14,7 @@ class CommentContentView: UICollectionView {
             reloadData()
         }
     }
-    var onClick: ((CommentContentClickAction)->Void)?
+    weak var actionDelegate: MomentCommentDelegate?
     
     init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
@@ -46,7 +46,9 @@ extension CommentContentView: UICollectionViewDataSource, UICollectionViewDelega
         cell.imageIV.kf.setImage(with: URL(string: model.avatar_url), placeholder: UIImage(named: "默认头像"))
         cell.titleBtn.setTitle(model.person, for: .normal)
         cell.setContent(model.comment, parent: indexPath.item%2==0 ?nil:"xxx")
-        cell.onClick = onClick
+        cell.onClick = {[weak self] action in
+            self?.actionDelegate?.contentDidSelected(model, action: action)
+        }
         return cell
     }
     
@@ -54,109 +56,4 @@ extension CommentContentView: UICollectionViewDataSource, UICollectionViewDelega
         // 不能动态设置size
         return CGSize(width: collectionView.bounds.width, height: 50)
     }
-}
-
-enum CommentContentClickAction {
-    /// 点击头像
-    case avatar
-    /// 点击title
-    case title
-    /// 回复的标题
-    case reply
-    /// 点击背景
-    case bg
-}
-class CommentContentCell: UICollectionViewCell {
-    lazy var imageIV: UIImageView = {
-        let iv = UIImageView()
-        iv.layer.cornerRadius = 5
-        iv.layer.masksToBounds = true
-        iv.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(viewClick(_:)))
-        iv.addGestureRecognizer(tap)
-        return iv
-    }()
-    lazy var titleBtn: UIButton = {
-        let btn = UIButton(type: .custom)
-        btn.setTitleColor(mDarkBlueColor, for: .normal)
-        btn.titleLabel?.font = UIFont.systemFont(ofSize: 14)
-        btn.addTarget(self, action: #selector(click(_:)), for: .touchUpInside)
-        return btn
-    }()
-    lazy var contentLb: JXLabel = {
-        let lb = JXLabel()
-        lb.font = UIFont.systemFont(ofSize: 14)
-        lb.textColor = mBlackColor
-        lb.numberOfLines = 0
-        return lb
-    }()
-    fileprivate lazy var separatorView: UIView = {
-        let v = UIView()
-        v.frame = self.bounds
-        v.frame.size.height = 0.5
-        v.frame.origin.y = self.bounds.height - 0.5
-        v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
-        return v
-    }()
-    
-    var onClick: ((CommentContentClickAction)->Void)?
-    func setContent(_ text: String, parent: String?) {
-        contentLb.text = parent == nil ? text : "回复\(parent!)：\(text)"
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(viewClick(_:)))
-        tag = 10
-        self.addGestureRecognizer(tap)
-        
-        addSubview(imageIV)
-        addSubview(titleBtn)
-        addSubview(contentLb)
-        setMultiLabel(contentLb)
-        addSubview(separatorView)
-        
-        imageIV.snp.makeConstraints { (make) in
-            make.width.height.equalTo(40)
-            make.leading.centerY.equalToSuperview()
-        }
-        titleBtn.snp.makeConstraints { (make) in
-            make.leading.equalTo(imageIV.snp.trailing).offset(5)
-            make.top.equalTo(imageIV)
-            make.height.equalTo(18)
-            make.trailing.lessThanOrEqualToSuperview()
-        }
-        contentLb.snp.makeConstraints { (make) in
-            make.leading.equalTo(titleBtn)
-            make.top.equalTo(titleBtn.snp.bottom)
-        }
-    }
-    
-    private func setMultiLabel(_ lb: JXLabel) {
-        let reply = JXLabelType.custom(pattern: "回复(.+)：", start: 2, tender: -1)
-        lb.customColor = [reply: mDarkBlueColor]
-        lb.enabledTypes = [.URL, .phone, reply]
-        lb.handleCustomTap(reply) {[weak self] (text) in
-            self?.onClick?(.reply)
-        }
-        lb.handleURLTap { (text) in
-            print(text)
-        }
-        lb.handlePhoneTap { (phone) in
-            print(phone)
-        }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    @objc private func viewClick(_ ges: UIGestureRecognizer) {
-        let avatar = ges.view?.tag == 0
-        onClick?(avatar ? .avatar : .bg)
-    }
-    @objc private func click(_ btn: UIButton) {
-        onClick?(.title)
-    }
-    
 }

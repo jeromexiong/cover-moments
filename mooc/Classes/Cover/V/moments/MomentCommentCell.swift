@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol MomentCommentDelegate: NSObjectProtocol {
+    func contentDidSelected(_ model: CommentInfo, action: CommentContentClickAction)
+    func thumbDidSelected(_ model: CommentInfo)
+}
 class MomentCommentCell: UICollectionViewCell {
     fileprivate lazy var contentV: UIView = {
         let v = UIView()
@@ -20,6 +24,11 @@ class MomentCommentCell: UICollectionViewCell {
     }()
     fileprivate lazy var thumbView: NineImageView = {
         let view = CommentThumbView(frame: .zero)
+        view.onClick = {[weak self] idx in
+            if let model = self?.viewModel?.comments[idx] {
+                self?.thumbDidSelected(model)
+            }
+        }
         return view
     }()
     fileprivate lazy var thumbIcon: UIImageView = {
@@ -34,7 +43,7 @@ class MomentCommentCell: UICollectionViewCell {
     }()
     fileprivate lazy var commentView: CommentContentView = {
         let view = CommentContentView(frame: .zero)
-        view.onClick = onClick
+        view.actionDelegate = self
         return view
     }()
     fileprivate lazy var divisionV: UIView = {
@@ -49,7 +58,7 @@ class MomentCommentCell: UICollectionViewCell {
         v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
         return v
     }()
-    var onClick: ((CommentContentClickAction)->Void)?
+    weak var actionDelegate: MomentCommentDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -77,10 +86,12 @@ class MomentCommentCell: UICollectionViewCell {
         layer.shouldRasterize = true
         layer.rasterizationScale = UIScreen.main.scale
     }
+    var viewModel: MomentInfo?
 }
 extension MomentCommentCell: ListBindable {
     func bindViewModel(_ viewModel: Any) {
         guard let viewModel = viewModel as? MomentInfo else { return }
+        self.viewModel = viewModel
         contentV.frame.size.height = viewModel.contentHeight
         
         let minX = thumbIcon.frame.maxX + thumbIcon.frame.minX
@@ -93,5 +104,15 @@ extension MomentCommentCell: ListBindable {
         commentIcon.frame.origin.y = thumbIcon.frame.minY + divisionV.frame.maxY
         commentView.frame = CGRect(x: minX, y: divisionV.frame.maxY, width: thumbView.bounds.width, height: viewModel.commentHeight)
         commentView.comments = viewModel.comments
+    }
+}
+
+extension MomentCommentCell: MomentCommentDelegate {
+    func contentDidSelected(_ model: CommentInfo, action: CommentContentClickAction) {
+        actionDelegate?.contentDidSelected(model, action: action)
+    }
+    
+    func thumbDidSelected(_ model: CommentInfo) {
+        actionDelegate?.thumbDidSelected(model)
     }
 }
