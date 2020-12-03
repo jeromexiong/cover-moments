@@ -88,15 +88,10 @@ class CommentInputView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     /// 滚动collectionview
-    /// - Parameter relative: 相对于底部的视图
-    func scrollForComment(_ relative: UIView) {
-        /// 当前view相对于Windows的坐标
-        let rect = relative.convert(relative.bounds, to: UIApplication.shared.keyWindow)
+    func scrollForComment(_ rect: CGRect) {
         if keyboardHeight > 0 {
-            let delta = ctTop - rect.maxY
-            NotificationCenter.default.post(name: NSNotification.Name.list.contentOffset, object: delta)
-//            let offsetY = self.collectionView.contentOffset.y - delta
-//            self.collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: true)
+            let offset = rect.maxY - ctTop
+            NotificationCenter.default.post(name: NSNotification.Name.list.contentOffset, object: offset)
         }
     }
 }

@@ -14,6 +14,7 @@ class NineImageView: UICollectionView {
             reloadData()
         }
     }
+    var isRounds = false
     
     init(frame: CGRect) {
         let layout = UICollectionViewFlowLayout()
@@ -23,7 +24,6 @@ class NineImageView: UICollectionView {
         delegate = self
         dataSource = self
         backgroundColor = .clear
-        register(NineImageViewCell.self, forCellWithReuseIdentifier: "NineImageViewCell")
         if #available(iOS 11.0, *) {
             contentInsetAdjustmentBehavior = .never
         }
@@ -32,7 +32,7 @@ class NineImageView: UICollectionView {
     required init?(coder: NSCoder) {
         fatalError()
     }
-    
+    @objc var onPreviewImages: ((IndexPath)->Void)?
 }
 extension NineImageView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -40,8 +40,12 @@ extension NineImageView: UICollectionViewDataSource, UICollectionViewDelegateFlo
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NineImageViewCell", for: indexPath) as! NineImageViewCell
+        let cell = collectionView.cell(NineImageViewCell.self, indexPath: indexPath)
         cell.imageIV.kf.setImage(with: URL(string: images[indexPath.item]))
+        if isRounds {
+            cell.imageIV.layer.cornerRadius = 5
+            cell.imageIV.layer.masksToBounds = true
+        }
         return cell
     }
     
@@ -52,7 +56,7 @@ extension NineImageView: UICollectionViewDataSource, UICollectionViewDelegateFlo
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("图片预览\(indexPath)")
-        PhotoManager.previewImages(images, collectionView: collectionView, indexPath: indexPath)
+        onPreviewImages?(indexPath)
     }
 }
 

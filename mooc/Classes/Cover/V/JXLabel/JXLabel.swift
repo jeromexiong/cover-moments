@@ -151,6 +151,26 @@ open class JXLabel: UILabel {
         guard let touch = touches.first else {return}
         onTouch(touch)
     }
+    open override var canBecomeFirstResponder: Bool { return true }
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        return performAction(action, sender: sender)
+    }
+    /// 是否允许长按复制
+    var enableLongPress: Bool? {
+        didSet {
+            isUserInteractionEnabled = enableLongPress ?? false
+            if oldValue != nil && enableLongPress != true {
+                removeGestureRecognizer(longPress)
+            } else if oldValue == nil && enableLongPress == true {
+                addGestureRecognizer(longPress)
+            }
+        }
+    }
+    
+    fileprivate lazy var longPress: UILongPressGestureRecognizer = {
+        return UILongPressGestureRecognizer(target: self, action: #selector(longPressAction(_:)))
+    }()
 }
 // MARK: - init
 fileprivate extension JXLabel {
@@ -162,6 +182,7 @@ fileprivate extension JXLabel {
         textContainer.lineFragmentPadding = 0
         textContainer.lineBreakMode = .byWordWrapping
         isUserInteractionEnabled = true
+        enableLongPress = true
     }
     func updateTextStorage(updateString: Bool = true) {
         guard let attributedText = attributedText else {return}
@@ -197,6 +218,10 @@ fileprivate extension JXLabel {
         
         let mutAttrString = NSMutableAttributedString(attributedString: attrString)
         
+        if mutAttrString.string.count == 0 {
+            return mutAttrString
+        }
+        
         var range = NSRange(location: 0, length: 0)
         //给指定索引的字符返回属性
         var attributes = mutAttrString.attributes(at: 0, effectiveRange: &range)
@@ -216,6 +241,7 @@ fileprivate extension JXLabel {
     }
     /// 给目标字符串添加文字属性
     func addPatternAttributes(_ mutAttrString : NSMutableAttributedString) {
+        if mutAttrString.string.count == 0 { return }
         
         var range = NSRange(location: 0, length: 0)
         //给指定索引的字符返回属性
@@ -358,5 +384,51 @@ fileprivate extension JXLabel {
     func didTapCustom(_ type : JXLabelType,custom : String) -> Void {
         guard let customHandler = customHandler[type] else {return}
         customHandler(custom)
+    }
+}
+private var showFavorKey: Void?
+public extension JXLabel {
+    var showFavor: (()->Void)? {
+        set {
+            objc_setAssociatedObject(self, &showFavorKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+        get {
+            return objc_getAssociatedObject(self, &showFavorKey) as? (()->Void)? ?? nil
+        }
+    }
+}
+// MARK: 手势
+fileprivate extension JXLabel {
+    @objc func longPressAction(_ sender: UIGestureRecognizer) {
+        guard sender.state == .began else {
+            return
+        }
+        becomeFirstResponder()
+
+        let menuController = UIMenuController.shared
+        let copyItem = UIMenuItem(title: "复制", action: #selector(copyText))
+        var items = [copyItem]
+        if showFavor != nil {
+            items.append(UIMenuItem(title: "收藏", action: #selector(favor)))
+        }
+        menuController.menuItems = items
+        // 设置菜单控制器点击区域为当前控件 bounds
+        menuController.setTargetRect(bounds, in: self)
+        menuController.setMenuVisible(true, animated: true)
+
+    }
+    @objc func copyText() {
+        UIPasteboard.general.string = self.text
+    }
+    @objc func favor() {
+        showFavor?()
+    }
+    @objc func performAction(_ action: Selector, sender: Any?) -> Bool {
+        switch action {
+        case #selector(copyText), #selector(favor):
+            return true
+        default:
+            return false
+        }
     }
 }

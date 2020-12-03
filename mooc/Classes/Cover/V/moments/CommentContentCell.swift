@@ -22,7 +22,7 @@ enum CommentContentClickAction {
     /// 草稿
     case commentDraft(String)
 }
-class CommentContentCell: UICollectionViewCell {
+class CommentContentCell: UITableViewCell {
     fileprivate lazy var imageIV: UIImageView = {
         let iv = UIImageView()
         iv.layer.cornerRadius = 5
@@ -36,6 +36,7 @@ class CommentContentCell: UICollectionViewCell {
         let btn = UIButton(type: .custom)
         btn.setTitleColor(mDarkBlueColor, for: .normal)
         btn.titleLabel?.font = UIFont.systemFont(ofSize: 14)
+        btn.contentHorizontalAlignment = .left
         btn.addTarget(self, action: #selector(click(_:)), for: .touchUpInside)
         return btn
     }()
@@ -46,14 +47,6 @@ class CommentContentCell: UICollectionViewCell {
         lb.numberOfLines = 0
         return lb
     }()
-    fileprivate lazy var separatorView: UIView = {
-        let v = UIView()
-        v.frame = self.bounds
-        v.frame.size.height = 0.5
-        v.frame.origin.y = self.bounds.height - 0.5
-        v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
-        return v
-    }()
     fileprivate lazy var commentnputView: CommentInputView = {
         let inputView = CommentInputView()
         inputView.delegate = self
@@ -63,7 +56,7 @@ class CommentContentCell: UICollectionViewCell {
     fileprivate var isSelf = false
     var comment: CommentInfo! {
         didSet {
-            imageIV.kf.setImage(with: URL(string: comment.avatar_url), placeholder: UIImage(named: "默认头像"))
+            imageIV.kf.setImage(with: URL(string: comment.avatar_url))
             titleBtn.setTitle(comment.person, for: .normal)
 
             let reply: String? = "xxx"
@@ -72,13 +65,23 @@ class CommentContentCell: UICollectionViewCell {
             }else {
                 contentLb.text = comment.comment
             }
-            isSelf = false
+            isSelf = true
         }
     }
     var onClick: ((CommentContentClickAction)->Void)?
+    var onRelativeRect: (()->CGRect)?
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    static func getHeight(_ model: CommentInfo) -> CGFloat {
+        let font = UIFont.systemFont(ofSize: 14)
+        let width = mScreenW - 50 - 34 - MomentHeaderCell.padding * 2
+        let height = 50 + model.comment.textSize(width, font: font).height - font.lineHeight
+        return height
+    }
+    
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        backgroundColor = .clear
+        
         self.isUserInteractionEnabled = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(viewClick(_:)))
         tag = 10
@@ -88,20 +91,20 @@ class CommentContentCell: UICollectionViewCell {
         addSubview(titleBtn)
         addSubview(contentLb)
         setMultiLabel(contentLb)
-        addSubview(separatorView)
         
         imageIV.snp.makeConstraints { (make) in
             make.width.height.equalTo(40)
-            make.leading.centerY.equalToSuperview()
+            make.leading.equalToSuperview()
+            make.top.equalTo(5)
         }
         titleBtn.snp.makeConstraints { (make) in
             make.leading.equalTo(imageIV.snp.trailing).offset(5)
             make.top.equalTo(imageIV)
             make.height.equalTo(18)
-            make.trailing.lessThanOrEqualToSuperview()
+            make.trailing.equalToSuperview().offset(-5)
         }
         contentLb.snp.makeConstraints { (make) in
-            make.leading.equalTo(titleBtn)
+            make.leading.trailing.equalTo(titleBtn)
             make.top.equalTo(titleBtn.snp.bottom)
         }
     }
@@ -114,10 +117,10 @@ class CommentContentCell: UICollectionViewCell {
             self?.onClick?(.reply)
         }
         lb.handleURLTap { (text) in
-            print(text)
+            NotificationCenter.default.post(name: NSNotification.Name.list.openURL, object: URL(string: text))
         }
         lb.handlePhoneTap { (phone) in
-            print(phone)
+            UIApplication.shared.openURL(URL(string: "tel://\(phone)")!)
         }
     }
     
@@ -140,7 +143,9 @@ class CommentContentCell: UICollectionViewCell {
 
 extension CommentContentCell: CommentInputViewDelegate {
     func onTopChanged(_ top: CGFloat) {
-        commentnputView.scrollForComment(self)
+        if let onRelativeRect = onRelativeRect {
+            commentnputView.scrollForComment(onRelativeRect())
+        }
     }
     
     func onTextChanged(_ text: String) {

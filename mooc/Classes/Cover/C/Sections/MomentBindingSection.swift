@@ -66,6 +66,13 @@ class MomentBindingSection: ListBindingSectionController<ListDiffable> {
                 self.toSaveDraft(text)
             }
         }
+        
+        cell.onRelativeRect = {[unowned self] () -> CGRect in
+            let first = self.cellForItem(at: 0).frame
+            let last = self.cellForItem(at: index).frame
+            let rect = CGRect(x: 0, y: first.minY, width: first.width, height: last.maxY-first.minY)
+            return rect
+        }
         return cell
     }
     func momentCommentCell(at index: Int) -> MomentCommentCell {

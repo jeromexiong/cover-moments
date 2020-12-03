@@ -49,6 +49,9 @@ class MomentBottomCell: UICollectionViewCell {
     }()
     
     var onClick: ((MomentBottomAction)->Void)?
+    /// section的顶部cell，即头像部分
+    var onRelativeRect: (()->CGRect)?
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -63,6 +66,7 @@ class MomentBottomCell: UICollectionViewCell {
         inputView.delegate = self
         return inputView
     }()
+    var viewModel: MomentInfo?
 }
 fileprivate extension MomentBottomCell {
     func setup() {
@@ -82,7 +86,7 @@ fileprivate extension MomentBottomCell {
         switch btn.tag {
         case 0:
             // more
-            OperateMenuView.show(self.moreBtn, isLiked: false) {[weak self] idx in
+            OperateMenuView.show(self.moreBtn, isLiked: false, canComment: true) {[weak self] idx in
                 guard let `self` = self else { return }
                 if idx == 0 {
                     self.onClick?(.thumbup)
@@ -101,6 +105,7 @@ fileprivate extension MomentBottomCell {
 extension MomentBottomCell: ListBindable {
     func bindViewModel(_ viewModel: Any) {
         guard let viewModel = viewModel as? MomentInfo else { return }
+        self.viewModel = viewModel
         timeLb.text = viewModel.publicTime
         timeLb.sizeToFit()
         deleteBtn.isHidden = false
@@ -108,10 +113,13 @@ extension MomentBottomCell: ListBindable {
 }
 extension MomentBottomCell: CommentInputViewDelegate {
     func onTopChanged(_ top: CGFloat) {
-        commentnputView.scrollForComment(self)
+        if let onRelativeRect = onRelativeRect {
+            commentnputView.scrollForComment(onRelativeRect())
+        }
     }
     
     func onTextChanged(_ text: String) {
+        print("comment draft: \(text)")
         self.onClick?(.commentDraft(text))
     }
     

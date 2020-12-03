@@ -8,7 +8,7 @@
 
 import Foundation
 
-class CommentContentView: UICollectionView {
+class CommentContentView: UITableView {
     var comments = [CommentInfo]() {
         didSet {
             reloadData()
@@ -17,17 +17,12 @@ class CommentContentView: UICollectionView {
     weak var actionDelegate: MomentCommentDelegate?
     
     init(frame: CGRect) {
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumInteritemSpacing = 0
-        layout.minimumLineSpacing = 0
-        super.init(frame: frame, collectionViewLayout: layout)
+        super.init(frame: frame, style: .plain)
         delegate = self
         dataSource = self
         backgroundColor = .clear
-        register(CommentContentCell.self, forCellWithReuseIdentifier: "CommentContentCell")
-        if #available(iOS 11.0, *) {
-            contentInsetAdjustmentBehavior = .never
-        }
+        separatorColor = UIColor.jx_color(hex: "#F0F0F0")
+        separatorInset = UIEdgeInsets(top: 0, left: 50, bottom: 0, right: 0)
     }
     
     required init?(coder: NSCoder) {
@@ -35,23 +30,34 @@ class CommentContentView: UICollectionView {
     }
     
 }
-extension CommentContentView: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+extension CommentContentView: UITableViewDataSource, UITableViewDelegate {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return comments.count
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CommentContentCell", for: indexPath) as! CommentContentCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.cell(CommentContentCell.self)
         let model = comments[indexPath.item]
         cell.comment = model
         cell.onClick = {[weak self] action in
             self?.actionDelegate?.contentDidSelected(model, action: action)
         }
+        cell.onRelativeRect = {[weak self] () -> CGRect in
+            guard let self = self, var rect = self.actionDelegate?.commentRect() else {
+                return .zero
+            }
+            var height: CGFloat = 0
+            for idx in 0...indexPath.item {
+                height += CommentContentCell.getHeight(self.comments[idx])
+            }
+            rect.origin.y += height
+            rect.size.height = 10
+            return rect
+        }
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // 不能动态设置size
-        return CGSize(width: collectionView.bounds.width, height: 50)
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let model = comments[indexPath.item]
+        return CommentContentCell.getHeight(model)
     }
 }

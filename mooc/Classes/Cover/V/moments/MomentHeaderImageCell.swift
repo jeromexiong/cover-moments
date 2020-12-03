@@ -25,7 +25,7 @@ class MomentHeaderImageCell: UICollectionViewCell {
     }()
     fileprivate lazy var usernameLb: UILabel = {
         let lb = UILabel()
-        lb.frame = CGRect(x: avatarIV.frame.maxX+10, y: 12, width: MomentHeaderCell.contentW, height: 20)
+        lb.frame = CGRect(x: avatarIV.frame.maxX+10, y: avatarIV.frame.minY+2, width: MomentHeaderCell.contentW, height: 20)
         lb.textColor = mCoverColor
         lb.font = UIFont.boldSystemFont(ofSize: 17)
         return lb
@@ -35,6 +35,9 @@ class MomentHeaderImageCell: UICollectionViewCell {
         lb.frame = CGRect(x: usernameLb.frame.minX, y: usernameLb.frame.maxY+5, width: MomentHeaderCell.contentW, height: 0)
         lb.font = UIFont.systemFont(ofSize: 17)
         lb.numberOfLines = 0
+        lb.showFavor = {[weak self] in
+            guard let self = self else { return }
+        }
         return lb
     }()
     /// 单张图片
@@ -45,8 +48,9 @@ class MomentHeaderImageCell: UICollectionViewCell {
         iv.autoresizesSubviews = true
         iv.clearsContextBeforeDrawing = true
         iv.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(previewImage))
+        let tap = UITapGestureRecognizer(target: self, action: #selector(previewImage(_:)))
         iv.addGestureRecognizer(tap)
+        iv.tag = 10
         return iv
     }()
     fileprivate lazy var expendBtn: UIButton = {
@@ -72,6 +76,7 @@ class MomentHeaderImageCell: UICollectionViewCell {
         super.init(coder: coder)
         setup()
     }
+    
     var viewModel: MomentInfo?
 }
 extension MomentHeaderImageCell {
@@ -95,9 +100,9 @@ extension MomentHeaderImageCell {
     @objc func previewImage(_ ges: UIGestureRecognizer) {
         switch ges.view?.tag {
         case 0:
-            NotificationCenter.default.post(name: NSNotification.Name.list.push, object: viewModel?.id)
+            NotificationCenter.default.post(name: NSNotification.Name.list.push, object: viewModel?.userInfo)
         case 10:
-            PhotoManager.previewImage(singleIV)
+            print("预览图片")
         default:
             break
         }
@@ -106,18 +111,16 @@ extension MomentHeaderImageCell {
         onClick?(btn.tag)
     }
 }
-
 extension MomentHeaderImageCell: ListBindable {
     func bindViewModel(_ viewModel: Any) {
         guard let viewModel = viewModel as? MomentInfo else { return }
         self.viewModel = viewModel
-        self.avatarIV.kf.setImage(with: URL(string: viewModel.avatar))
-        self.usernameLb.text = viewModel.userName
+        avatarIV.kf.setImage(with: URL(string: viewModel.avatar))
+        usernameLb.text = viewModel.userName
         
-        if !viewModel.content.isEmpty {
-            contentLb.text = viewModel.content
-            contentLb.frame.size.height = viewModel.textHeight
-        }
+        contentLb.text = viewModel.content
+        contentLb.frame.size.height = viewModel.textHeight
+        
         
         if viewModel.isNeedExpend {
             expendBtn.isSelected = viewModel.isTextExpend

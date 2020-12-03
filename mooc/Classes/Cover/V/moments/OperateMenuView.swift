@@ -44,8 +44,8 @@ class OperateMenuView: UIView {
         return v
     }()
     
-    static func show(_ relative: UIView, isLiked: Bool, completed: ((Int)->Void)?) {
-        let v = OperateMenuView(isLiked, completed: completed)
+    static func show(_ relative: UIView, isLiked: Bool, canComment: Bool, completed: ((Int)->Void)?) {
+        let v = OperateMenuView(isLiked, canComment: canComment, completed: completed)
         UIApplication.shared.keyWindow?.addSubview(v)
         // 计算相对于屏幕的位置
         let frame = relative.convert(relative.bounds, to: UIApplication.shared.keyWindow)
@@ -53,10 +53,12 @@ class OperateMenuView: UIView {
     }
     
     fileprivate var completed: ((Int)->Void)?
-    private init(_ isLiked: Bool, completed: ((Int)->Void)?) {
+    fileprivate var canComment = true
+    private init(_ isLiked: Bool, canComment: Bool, completed: ((Int)->Void)?) {
         super.init(frame: UIScreen.main.bounds)
         self.completed = completed
         thumbupBtn.isSelected = isLiked
+        self.canComment = canComment
         setup()
     }
     
@@ -72,26 +74,31 @@ fileprivate extension OperateMenuView {
         let tap = UITapGestureRecognizer(target: self, action: #selector(hide))
         addGestureRecognizer(tap)
         
-        
         contentView.addSubview(thumbupBtn)
-        contentView.addSubview(commentBtn)
-        contentView.addSubview(separatorView)
         
         thumbupBtn.snp.makeConstraints { (make) in
             make.width.equalToSuperview().multipliedBy(0.5)
-            make.height.leading.equalToSuperview()
+            make.height.leading.centerY.equalToSuperview()
         }
-        separatorView.snp.makeConstraints { (make) in
-            make.width.equalTo(0.5)
-            make.height.equalToSuperview().inset(5)
-            make.leading.equalTo(thumbupBtn.snp.trailing)
-            make.centerY.equalToSuperview()
+        if canComment {
+            contentView.addSubview(commentBtn)
+            contentView.addSubview(separatorView)
+
+            separatorView.snp.makeConstraints { (make) in
+                make.width.equalTo(0.5)
+                make.height.equalToSuperview().inset(5)
+                make.leading.equalTo(thumbupBtn.snp.trailing)
+                make.centerY.equalToSuperview()
+            }
+            commentBtn.snp.makeConstraints { (make) in
+                make.width.equalToSuperview().multipliedBy(0.5)
+                make.height.trailing.centerY.equalToSuperview()
+            }
+        }else {
+            thumbupBtn.snp.remakeConstraints { (make) in
+                make.edges.equalToSuperview()
+            }
         }
-        commentBtn.snp.makeConstraints { (make) in
-            make.width.equalToSuperview().multipliedBy(0.5)
-            make.height.trailing.equalToSuperview()
-        }
-        
     }
     
     @objc func click(_ btn: UIButton) {
@@ -101,7 +108,7 @@ fileprivate extension OperateMenuView {
     }
     
     func show(by relative: CGRect) {
-        let width: CGFloat = 160
+        let width: CGFloat = canComment ? 160 : 80
         let originY = relative.midY - 36/2
         let originX = relative.minX - width - 10
         contentView.frame = CGRect(x: relative.minX, y: originY, width: 0, height: 36)

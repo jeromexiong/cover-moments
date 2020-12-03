@@ -65,3 +65,33 @@ extension BaseListVC : ListAdapterDataSource {
         return nil
     }
 }
+
+public extension UITableView {
+    /// 获取当前`cell`实例
+    func cell<T>(_ cellClass: T.Type, reuseIdentifier: String? = nil, fromNib: Bool = false) -> T where T : UITableViewCell {
+        let identifier = reuseIdentifier ?? cellClass.jx_className
+        var cell = dequeueReusableCell(withIdentifier: identifier) as? T
+        if cell == nil {
+            if fromNib {
+                cell = Bundle.main.loadNibNamed(cellClass.jx_className, owner: self
+                                                , options: nil)?.last as? T
+            }else {
+                cell = T(style: .default, reuseIdentifier: identifier)
+            }
+        }
+        return cell!
+    }
+}
+public extension UICollectionView {
+    /// 获取当前`cell`实例
+    func cell<T>(_ cellClass: T.Type, indexPath: IndexPath, reuseIdentifier: String? = nil, fromNib: Bool = false) -> T where T : UICollectionViewCell {
+        let identifier = reuseIdentifier ?? cellClass.jx_className
+        if fromNib {
+            register(UINib(nibName: cellClass.jx_className, bundle: nil), forCellWithReuseIdentifier: identifier)
+        }else {
+            register(cellClass, forCellWithReuseIdentifier: identifier)
+        }
+        return dequeueReusableCell(withReuseIdentifier: identifier, for: indexPath) as! T
+    }
+}
+

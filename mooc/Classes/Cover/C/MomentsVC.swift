@@ -100,11 +100,11 @@ fileprivate extension MomentsVC {
             self.adapter.performUpdates(animated: true, completion: nil)
         }
         contentOffset = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.contentOffset, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
-            guard let delta = noti.object as? CGFloat, let self = self else {
+            guard let offset = noti.object as? CGFloat, let self = self else {
                 return
             }
-            let offsetY = self.collectionView.contentOffset.y - delta
-            self.collectionView.setContentOffset(CGPoint(x: 0, y: offsetY), animated: false)
+            if offset < 0 { return }
+            self.collectionView.setContentOffset(CGPoint(x: 0, y: offset), animated: false)
         })
         push = NotificationCenter.default.addObserver(forName: NSNotification.Name.list.push, object: nil, queue: OperationQueue.main, using: {[weak self] (noti) in
             guard let userId = noti.object as? Int, let self = self else {

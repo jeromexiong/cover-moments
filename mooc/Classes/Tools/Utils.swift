@@ -130,6 +130,19 @@ extension NSObject {
 }
 
 extension String {
+    
+    /// 获取文字的宽高 空字符串高度为字体高度
+    ///
+    /// - Parameters:
+    ///   - maxWidth: 空间的最大宽度
+    ///   - font: 文字字体
+    /// - Returns: 返回计算好的size
+    func textSize(_ maxWidth: CGFloat, font: UIFont) -> CGSize {
+        let constraint = CGSize(width: maxWidth, height: CGFloat.greatestFiniteMagnitude)
+        let rect = self.boundingRect(with: constraint, options: ([.usesLineFragmentOrigin]), attributes: [NSAttributedString.Key.font: font], context: nil)
+        return CGSize(width: ceil(rect.width), height: ceil(rect.height))
+    }
+    
     /// 获取文字的每一行字符串 空字符串为空数组
     ///
     /// - Parameters:

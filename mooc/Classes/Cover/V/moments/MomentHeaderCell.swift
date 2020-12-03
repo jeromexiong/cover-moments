@@ -25,7 +25,7 @@ class MomentHeaderCell: UICollectionViewCell {
     }()
     fileprivate lazy var usernameLb: UILabel = {
         let lb = UILabel()
-        lb.frame = CGRect(x: avatarIV.frame.maxX+10, y: 12, width: MomentHeaderCell.contentW, height: 20)
+        lb.frame = CGRect(x: avatarIV.frame.maxX+10, y: avatarIV.frame.minY+2, width: MomentHeaderCell.contentW, height: 20)
         lb.textColor = mCoverColor
         lb.font = UIFont.boldSystemFont(ofSize: 17)
         return lb
@@ -35,13 +35,10 @@ class MomentHeaderCell: UICollectionViewCell {
         lb.frame = CGRect(x: usernameLb.frame.minX, y: usernameLb.frame.maxY+5, width: MomentHeaderCell.contentW, height: 0)
         lb.font = UIFont.systemFont(ofSize: 17)
         lb.numberOfLines = 0
+        lb.showFavor = {[weak self] in
+            guard let self = self else { return }
+        }
         return lb
-    }()
-    fileprivate lazy var nineImageView: NineImageView = {
-        let view = NineImageView(frame: .zero)
-        view.frame = contentLb.frame
-        view.frame.size.width -= 50
-        return view
     }()
     fileprivate lazy var expendBtn: UIButton = {
         let btn = UIButton(type: .custom)
@@ -55,29 +52,37 @@ class MomentHeaderCell: UICollectionViewCell {
         btn.isHidden = true
         return btn
     }()
+    fileprivate lazy var nineImageView: NineImageView = {
+        let view = NineImageView(frame: .zero)
+        view.frame = contentLb.frame
+        view.frame.size.width -= 50
+        view.onPreviewImages = {[weak self] indexPath in
+        }
+        return view
+    }()
     
     var onClick: ((Int)->Void)?
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    
+
     required init?(coder: NSCoder) {
         super.init(coder: coder)
         setup()
     }
     
+    var viewModel: MomentInfo?
+}
+extension MomentHeaderCell {
     func setup() {
         addSubview(avatarIV)
         addSubview(usernameLb)
         addSubview(contentLb)
-        addSubview(nineImageView)
         addSubview(expendBtn)
+        addSubview(nineImageView)
         setLabel()
     }
-    var viewModel: MomentInfo?
-}
-extension MomentHeaderCell {
     func setLabel() {
         contentLb.enabledTypes = [.URL, .phone]
         contentLb.handleURLTap { (text) in
@@ -90,7 +95,7 @@ extension MomentHeaderCell {
     @objc func previewImage(_ ges: UIGestureRecognizer) {
         switch ges.view?.tag {
         case 0:
-            NotificationCenter.default.post(name: NSNotification.Name.list.push, object: viewModel?.id)
+            NotificationCenter.default.post(name: NSNotification.Name.list.push, object: viewModel?.userInfo)
         default:
             break
         }
@@ -103,13 +108,11 @@ extension MomentHeaderCell: ListBindable {
     func bindViewModel(_ viewModel: Any) {
         guard let viewModel = viewModel as? MomentInfo else { return }
         self.viewModel = viewModel
-        self.avatarIV.kf.setImage(with: URL(string: viewModel.avatar))
-        self.usernameLb.text = viewModel.userName
+        avatarIV.kf.setImage(with: URL(string: viewModel.avatar))
+        usernameLb.text = viewModel.userName
         
-        if !viewModel.content.isEmpty {
-            contentLb.text = viewModel.content
-            contentLb.frame.size.height = viewModel.textHeight
-        }
+        contentLb.text = viewModel.content
+        contentLb.frame.size.height = viewModel.textHeight
         
         if viewModel.isNeedExpend {
             expendBtn.isSelected = viewModel.isTextExpend

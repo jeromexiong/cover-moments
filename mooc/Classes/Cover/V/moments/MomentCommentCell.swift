@@ -11,6 +11,13 @@ import Foundation
 protocol MomentCommentDelegate: NSObjectProtocol {
     func contentDidSelected(_ model: CommentInfo, action: CommentContentClickAction)
     func thumbDidSelected(_ model: CommentInfo)
+    /// 只用于commentView获取当前cell的frame
+    func commentRect() -> CGRect
+}
+extension MomentCommentDelegate {
+    func commentRect() -> CGRect {
+        return .zero
+    }
 }
 class MomentCommentCell: UICollectionViewCell {
     fileprivate lazy var contentV: UIView = {
@@ -54,7 +61,6 @@ class MomentCommentCell: UICollectionViewCell {
     }()
     fileprivate lazy var separatorV: UIView = {
         let v = UIView(frame: bounds)
-        v.frame = CGRect(x: 0, y: bounds.height-1, width: bounds.width, height: 1)
         v.backgroundColor = UIColor.jx_color(hex: "#F0F0F0")
         return v
     }()
@@ -96,17 +102,24 @@ extension MomentCommentCell: ListBindable {
         
         let minX = thumbIcon.frame.maxX + thumbIcon.frame.minX
         thumbView.frame = CGRect(x: minX, y: 5, width: contentV.bounds.width-minX, height: viewModel.thumbsHeight-10)
+        thumbView.isRounds = true
         thumbView.images = viewModel.comments.map({$0.avatar_url})
         
         divisionV.frame.origin.y = thumbView.frame.maxY+5-divisionV.frame.height
         divisionV.isHidden = viewModel.comments.count == 0
         
+        if viewModel.comments.count == 0 {
+            thumbIcon.frame.size.height = 0
+            divisionV.frame.origin.y = 0
+        }
+        
         commentIcon.frame.origin.y = thumbIcon.frame.minY + divisionV.frame.maxY
         commentView.frame = CGRect(x: minX, y: divisionV.frame.maxY, width: thumbView.bounds.width, height: viewModel.commentHeight)
         commentView.comments = viewModel.comments
+        
+        separatorV.frame = CGRect(x: 0, y: bounds.height-1, width: bounds.width, height: 1)
     }
 }
-
 extension MomentCommentCell: MomentCommentDelegate {
     func contentDidSelected(_ model: CommentInfo, action: CommentContentClickAction) {
         actionDelegate?.contentDidSelected(model, action: action)
@@ -114,5 +127,11 @@ extension MomentCommentCell: MomentCommentDelegate {
     
     func thumbDidSelected(_ model: CommentInfo) {
         actionDelegate?.thumbDidSelected(model)
+    }
+    
+    func commentRect() -> CGRect {
+        var rect = frame
+        rect.origin.y += commentView.frame.minY
+        return rect
     }
 }
