@@ -110,6 +110,7 @@ fileprivate extension CommentInputView {
                 self.updateTop(rect: rect, duration: duration)
             case .change(_):
                 self.updateHeight(self.textView.autoHeight)
+                self.delegate?.onTextChanged(self.textView.text)
             case .done:
                 self.dismiss()
                 self.delegate?.onSend(self.textView.text)

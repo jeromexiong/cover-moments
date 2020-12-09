@@ -98,6 +98,7 @@ open class JXLabel: UILabel {
     fileprivate var selectedElementTuple : ElementTuple?
     
     public typealias LabelCallBack = (String) -> ()
+    fileprivate var hashNormalHandler: LabelCallBack?
     fileprivate var hashtagTapHandler: LabelCallBack?
     fileprivate var mentionTapHandler: LabelCallBack?
     fileprivate var urlTapHandler: LabelCallBack?
@@ -105,6 +106,10 @@ open class JXLabel: UILabel {
     fileprivate var customHandler: [JXLabelType : LabelCallBack] = [:]
     
     // MARK: 公用 方法
+    /// 文本点击事件 （响应除`enabledTypes`属性设置外的点击事件
+    open func handleNormalTap(_ handler: @escaping LabelCallBack) {
+        hashNormalHandler = handler
+    }
     /// 标签点击事件
     open func handleHashtagTap(_ handler: @escaping LabelCallBack) {
         hashtagTapHandler = handler
@@ -352,7 +357,12 @@ fileprivate extension JXLabel {
                 updateWhenSelected(true)
             }
         case .ended:
-            guard let elementTuple = elementTuple else {return}
+            guard let elementTuple = elementTuple else {
+                if let text = text {
+                    hashNormalHandler?(text)
+                }
+                return
+            }
             updateWhenSelected(false)
             switch elementTuple.element {
             case .hashtag(let hashtag)  : didTapHashtag(hashtag)

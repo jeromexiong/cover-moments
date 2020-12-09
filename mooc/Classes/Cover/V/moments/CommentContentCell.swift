@@ -8,20 +8,6 @@
 
 import Foundation
 
-enum CommentContentClickAction {
-    /// 点击头像
-    case avatar
-    /// 点击title
-    case title
-    /// 回复的标题
-    case reply
-    /// 点击背景 是否是自己的评论
-    case bg(Bool)
-    /// 评论
-    case comment(String)
-    /// 草稿
-    case commentDraft(String)
-}
 class CommentContentCell: UITableViewCell {
     fileprivate lazy var imageIV: UIImageView = {
         let iv = UIImageView()
@@ -47,13 +33,6 @@ class CommentContentCell: UITableViewCell {
         lb.numberOfLines = 0
         return lb
     }()
-    fileprivate lazy var commentnputView: CommentInputView = {
-        let inputView = CommentInputView()
-        inputView.delegate = self
-        return inputView
-    }()
-    /// 是否是自己的评论
-    fileprivate var isSelf = false
     var comment: CommentInfo! {
         didSet {
             imageIV.kf.setImage(with: URL(string: comment.avatar_url))
@@ -65,11 +44,10 @@ class CommentContentCell: UITableViewCell {
             }else {
                 contentLb.text = comment.comment
             }
-            isSelf = true
         }
     }
     var onClick: ((CommentContentClickAction)->Void)?
-    var onRelativeRect: (()->CGRect)?
+    var onTextClick: (()->Void)?
     
     static func getHeight(_ model: CommentInfo) -> CGFloat {
         let font = UIFont.systemFont(ofSize: 14)
@@ -81,11 +59,7 @@ class CommentContentCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .clear
-        
-        self.isUserInteractionEnabled = true
-        let tap = UITapGestureRecognizer(target: self, action: #selector(viewClick(_:)))
-        tag = 10
-        self.addGestureRecognizer(tap)
+        contentView.isHidden = true
         
         addSubview(imageIV)
         addSubview(titleBtn)
@@ -101,10 +75,11 @@ class CommentContentCell: UITableViewCell {
             make.leading.equalTo(imageIV.snp.trailing).offset(5)
             make.top.equalTo(imageIV)
             make.height.equalTo(18)
-            make.trailing.equalToSuperview().offset(-5)
+            make.trailing.lessThanOrEqualToSuperview().offset(-5)
         }
         contentLb.snp.makeConstraints { (make) in
-            make.leading.trailing.equalTo(titleBtn)
+            make.leading.equalTo(titleBtn)
+            make.trailing.lessThanOrEqualToSuperview().offset(-5)
             make.top.equalTo(titleBtn.snp.bottom)
         }
     }
@@ -113,6 +88,9 @@ class CommentContentCell: UITableViewCell {
         let reply = JXLabelType.custom(pattern: "回复(.+)：", start: 2, tender: -1)
         lb.customColor = [reply: mDarkBlueColor]
         lb.enabledTypes = [.URL, .phone, reply]
+        lb.handleNormalTap {[weak self] text in
+            self?.onTextClick?()
+        }
         lb.handleCustomTap(reply) {[weak self] (text) in
             self?.onClick?(.reply)
         }
@@ -128,34 +106,10 @@ class CommentContentCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     @objc private func viewClick(_ ges: UIGestureRecognizer) {
-        let avatar = ges.view?.tag == 0
-        if !isSelf {
-            self.commentnputView.textView.placeholder = "回复\(comment.person)："
-            self.commentnputView.show()
-        }
-        onClick?(avatar ? .avatar : .bg(isSelf))
+        onClick?(.avatar)
     }
     @objc private func click(_ btn: UIButton) {
         onClick?(.title)
     }
     
-}
-
-extension CommentContentCell: CommentInputViewDelegate {
-    func onTopChanged(_ top: CGFloat) {
-        if let onRelativeRect = onRelativeRect {
-            commentnputView.scrollForComment(onRelativeRect())
-        }
-    }
-    
-    func onTextChanged(_ text: String) {
-        print("comment draft: \(text)")
-        self.onClick?(.commentDraft(text))
-    }
-    
-    func onSend(_ text: String) {
-        if !text.isEmpty {
-            self.onClick?(.comment(text))
-        }
-    }
 }
